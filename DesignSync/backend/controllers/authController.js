@@ -27,22 +27,32 @@ const setTokenCookies = (res, accessToken, refreshToken) => {
 
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password, role, companyName } = req.body;
+  const normalizedEmail = email?.trim().toLowerCase();
+  const normalizedPassword = typeof password === 'string' ? password.trim() : '';
 
   if (role && role !== 'academy_student') {
     return next(new ApiError(403, 'Only academy students can self-register. Please contact the admin for workspace access.'));
   }
 
-  const existingUser = await User.findOne({ email });
+  if (!name?.trim() || !normalizedEmail || !normalizedPassword) {
+    return next(new ApiError(400, 'Name, email, and password are required'));
+  }
+
+  if (normalizedPassword.length < 6) {
+    return next(new ApiError(400, 'Password must be at least 6 characters'));
+  }
+
+  const existingUser = await User.findOne({ email: normalizedEmail });
   if (existingUser) {
     return next(new ApiError(400, 'Email already in use'));
   }
 
   const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash(password, salt);
+  const passwordHash = await bcrypt.hash(normalizedPassword, salt);
 
   const user = await User.create({
-    name,
-    email,
+    name: name.trim(),
+    email: normalizedEmail,
     passwordHash,
     role: 'academy_student',
     companyName
@@ -61,12 +71,15 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) {
+  const normalizedEmail = email?.trim().toLowerCase();
+  const normalizedPassword = typeof password === 'string' ? password.trim() : '';
+
+  if (!normalizedEmail || !normalizedPassword) {
     return next(new ApiError(400, 'Please provide an email and password'));
   }
 
-  const user = await User.findOne({ email });
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+  const user = await User.findOne({ email: normalizedEmail });
+  if (!user || !(await bcrypt.compare(normalizedPassword, user.passwordHash))) {
     return next(new ApiError(401, 'Invalid credentials'));
   }
 

@@ -35,7 +35,7 @@ const Login = () => {
       else navigate('/studios');
       
     } catch (err) {
-      addToast(err.response?.data?.error || 'Failed to login', 'error');
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to login', 'error');
     } finally {
       setLoading(false);
     }

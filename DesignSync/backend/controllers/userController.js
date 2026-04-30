@@ -29,26 +29,32 @@ exports.getDesigners = asyncHandler(async (req, res, next) => {
 
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { name, email, password, role, companyName, avatar } = req.body;
+  const normalizedEmail = email?.trim().toLowerCase();
+  const normalizedPassword = typeof password === 'string' ? password.trim() : '';
 
-  if (!name || !email || !password || !role) {
+  if (!name?.trim() || !normalizedEmail || !normalizedPassword || !role) {
     return next(new ApiError(400, 'Name, email, password, and role are required'));
+  }
+
+  if (normalizedPassword.length < 6) {
+    return next(new ApiError(400, 'Password must be at least 6 characters'));
   }
 
   if (!ADMIN_MANAGED_ROLES.includes(role)) {
     return next(new ApiError(400, 'Admin can create designer, enterprise client, or academy student accounts only'));
   }
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email: normalizedEmail });
   if (existingUser) {
     return next(new ApiError(400, 'Email already in use'));
   }
 
   const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash(password, salt);
+  const passwordHash = await bcrypt.hash(normalizedPassword, salt);
 
   const user = await User.create({
-    name,
-    email,
+    name: name.trim(),
+    email: normalizedEmail,
     passwordHash,
     role,
     companyName,

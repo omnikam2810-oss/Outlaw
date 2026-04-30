@@ -80,7 +80,7 @@ export default function UserManagement() {
       setCreateForm({ name: '', email: '', password: '', role: 'designer', companyName: '' });
       addToast('User ID created successfully', 'success');
     } catch (err) {
-      addToast(err.response?.data?.error || 'Failed to create user', 'error');
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to create user', 'error');
     } finally {
       setCreating(false);
     }
