@@ -11,8 +11,7 @@ import { Building2, Layers3, LockKeyhole } from 'lucide-react';
 const registerSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.string()
+  password: z.string().min(6, 'Password must be at least 6 characters')
 });
 
 const Register = () => {
@@ -23,14 +22,13 @@ const Register = () => {
   
   const { register, handleSubmit, formState: { errors } } = useRHForm({
     resolver: zodResolver(registerSchema),
-    defaultValues: { role: 'academy_student' },
     mode: 'onBlur'
   });
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      const res = await registerUser(data);
+      const res = await registerUser({ ...data, role: 'academy_student' });
       addToast('Registered successfully', 'success');
       
       if (res.user.role === 'admin') navigate('/admin');
@@ -58,10 +56,10 @@ const Register = () => {
               </div>
             </div>
             <div className="mt-16">
-              <p className="text-sm font-semibold uppercase tracking-wider text-amber-300">Role-based access</p>
-              <h1 className="mt-4 text-4xl font-semibold leading-tight">Create the right seat for every collaborator.</h1>
+              <p className="text-sm font-semibold uppercase tracking-wider text-amber-300">Student access</p>
+              <h1 className="mt-4 text-4xl font-semibold leading-tight">Start academy work with a verified student account.</h1>
               <p className="mt-4 text-sm leading-6 text-slate-300">
-                Add designers, clients, admins, or academy students into a workspace that adapts to their responsibilities.
+                Designers and clients sign in with IDs created by the admin, while students can register directly for academy assignments.
               </p>
             </div>
           </div>
@@ -85,10 +83,10 @@ const Register = () => {
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
               <Building2 className="h-3.5 w-3.5 text-teal-500" />
-              Organization-ready account
+              Academy student account
             </div>
             <h1 className="mt-5 text-2xl font-semibold text-slate-950 dark:text-white">Create your account</h1>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Choose the role that matches how you will use the workspace.</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Student registration is open. Designer and client IDs are created by the admin.</p>
           </div>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -124,21 +122,8 @@ const Register = () => {
               {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Workspace role</label>
-              <select 
-                {...register('role')}
-                className="input-field"
-              >
-                <option value="academy_student">Academy Student</option>
-                <option value="designer">Designer</option>
-                <option value="enterprise_client">Enterprise Client</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-
             <Button type="submit" className="w-full" isLoading={loading}>
-              Create account
+              Create student account
             </Button>
           </form>
           

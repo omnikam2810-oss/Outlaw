@@ -31,7 +31,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-800 shadow-2xl modal-enter">
+      <div className="relative mt-20 w-full max-w-lg rounded-2xl bg-white dark:bg-slate-800 shadow-2xl modal-enter">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-5 py-4">
           <h2 id="modal-title" className="text-lg font-semibold text-slate-800 dark:text-slate-100">{title}</h2>
           <button

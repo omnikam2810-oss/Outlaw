@@ -28,6 +28,10 @@ const setTokenCookies = (res, accessToken, refreshToken) => {
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password, role, companyName } = req.body;
 
+  if (role && role !== 'academy_student') {
+    return next(new ApiError(403, 'Only academy students can self-register. Please contact the admin for workspace access.'));
+  }
+
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return next(new ApiError(400, 'Email already in use'));
@@ -40,7 +44,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     name,
     email,
     passwordHash,
-    role: role || 'academy_student',
+    role: 'academy_student',
     companyName
   });
 

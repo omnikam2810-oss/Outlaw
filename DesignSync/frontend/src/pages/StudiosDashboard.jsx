@@ -118,12 +118,12 @@ const ProjectList = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <div key={project._id} onClick={() => navigate(`/studios/${project._id}`)} className="group relative bg-white dark:bg-[#11151c] border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all cursor-pointer">
+            <div key={project._id} onClick={() => navigate(`/studios/${project._id}`)} className="group relative min-w-0 bg-white dark:bg-[#11151c] border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all cursor-pointer">
               <div className="flex items-start justify-between gap-3 text-sm">
-                <h3 className="font-semibold text-slate-950 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-white transition-colors">
+                <h3 className="min-w-0 flex-1 truncate font-semibold text-slate-950 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-white transition-colors">
                   {project.title}
                 </h3>
-                <Badge variant={project.status === 'completed' || project.status === 'approved' ? 'success' : 'warning'}>
+                <Badge variant={project.status === 'completed' || project.status === 'approved' ? 'success' : 'warning'} className="shrink-0">
                   {project.status || 'Draft'}
                 </Badge>
               </div>

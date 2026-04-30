@@ -3,25 +3,48 @@ import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import api from '../../api/axios';
 import { useToast } from '../ui/useToast';
+import { useAuth } from '../../context/useAuth';
 
 export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     clientId: '',
+    designerIds: [],
     deadline: ''
   });
   const [clients, setClients] = useState([]);
+  const [designers, setDesigners] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const { addToast } = useToast();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     if (isOpen) {
       api.get('/users/clients').then(res => {
         setClients(res.data.data);
       }).catch(() => {});
+
+      if (isAdmin) {
+        api.get('/users/designers').then(res => {
+          setDesigners(res.data.data);
+        }).catch(() => {});
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, isAdmin]);
+
+  const toggleDesigner = (designerId) => {
+    setFormData((prev) => {
+      const isSelected = prev.designerIds.includes(designerId);
+      return {
+        ...prev,
+        designerIds: isSelected
+          ? prev.designerIds.filter((id) => id !== designerId)
+          : [...prev.designerIds, designerId],
+      };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +54,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
       const { data } = await api.post('/projects', formData);
       addToast('Project created successfully', 'success');
       onCreated?.(data.data);
+      setFormData({ title: '', description: '', clientId: '', designerIds: [], deadline: '' });
       onClose();
     } catch (err) {
       addToast(err.response?.data?.error || 'Failed to create project', 'error');
@@ -75,6 +99,29 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
             ))}
           </select>
         </div>
+        {isAdmin && (
+          <div>
+            <label className="block text-sm font-medium mb-1">Assign Designer</label>
+            <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-100 p-2 dark:border-slate-600 dark:bg-slate-800">
+              {designers.length === 0 ? (
+                <p className="px-1 py-2 text-sm text-slate-500">No designer accounts found.</p>
+              ) : designers.map((designer) => (
+                <label key={designer._id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-white dark:hover:bg-slate-700">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-400"
+                    checked={formData.designerIds.includes(designer._id)}
+                    onChange={() => toggleDesigner(designer._id)}
+                  />
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium">{designer.name}</span>
+                    <span className="block truncate text-xs text-slate-500">{designer.email}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium mb-1">Deadline</label>
           <input 
@@ -85,7 +132,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
           />
         </div>
         <div className="flex justify-end gap-3 pt-2">
-          <Button variant="secondary" onClick={onClose} disabled={submitting}>Cancel</Button>
+          <Button type="button" variant="secondary" onClick={onClose} disabled={submitting}>Cancel</Button>
           <Button type="submit" isLoading={submitting}>Create Project</Button>
         </div>
       </form>

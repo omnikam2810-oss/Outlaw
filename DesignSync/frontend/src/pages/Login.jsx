@@ -87,10 +87,10 @@ const Login = () => {
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-              Theme-aware secure access
+              Single secure login
             </div>
             <h1 className="mt-5 text-2xl font-semibold text-slate-950 dark:text-white">Welcome back</h1>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Sign in to continue managing design work across your organization.</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Admin, designers, clients, and students all sign in here with their email and password.</p>
           </div>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

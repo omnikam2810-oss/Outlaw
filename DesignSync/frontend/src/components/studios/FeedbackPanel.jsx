@@ -167,7 +167,9 @@ export default function FeedbackPanel({ deliverable, threads = [], setThreads, o
 
     // Socket real-time updates
     socket.connect();
-    const onNew = (thread) => setThreads((prev) => [thread, ...prev]);
+    const onNew = (thread) => setThreads((prev) => (
+      prev.some((existing) => existing._id === thread._id) ? prev : [thread, ...prev]
+    ));
     const onReply = (updated) => setThreads((prev) => prev.map((t) => (t._id === updated._id ? updated : t)));
     const onResolved = (updated) => setThreads((prev) => prev.map((t) => (t._id === updated._id ? updated : t)));
 

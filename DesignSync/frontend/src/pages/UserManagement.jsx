@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, Edit2, Trash2, Check, X } from 'lucide-react';
+import { Users, Search, Edit2, Trash2, Check, X, UserPlus } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
@@ -8,6 +8,7 @@ import { useToast } from '../components/ui/useToast';
 import { useAuth } from '../context/useAuth';
 
 const ROLES = ['admin', 'designer', 'enterprise_client', 'academy_student'];
+const ADMIN_CREATABLE_ROLES = ['designer', 'enterprise_client', 'academy_student'];
 
 const ROLE_BADGE = {
   admin: 'success',
@@ -22,6 +23,14 @@ export default function UserManagement() {
   const [search, setSearch] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editRole, setEditRole] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'designer',
+    companyName: '',
+  });
   const { addToast } = useToast();
   const { user: currentUser } = useAuth();
 
@@ -55,6 +64,28 @@ export default function UserManagement() {
     }
   };
 
+  const createUser = async (e) => {
+    e.preventDefault();
+    try {
+      setCreating(true);
+      const payload = {
+        name: createForm.name.trim(),
+        email: createForm.email.trim(),
+        password: createForm.password,
+        role: createForm.role,
+        companyName: createForm.companyName.trim(),
+      };
+      const { data } = await api.post('/users', payload);
+      setUsers((prev) => [data.data, ...prev]);
+      setCreateForm({ name: '', email: '', password: '', role: 'designer', companyName: '' });
+      addToast('User ID created successfully', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.error || 'Failed to create user', 'error');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const deleteUser = async (targetUser) => {
     if (targetUser._id === currentUser?.id || targetUser._id === currentUser?._id) {
       addToast('You cannot delete your own account while signed in', 'error');
@@ -82,9 +113,65 @@ export default function UserManagement() {
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Users className="w-6 h-6 text-indigo-500" /> User Management
           </h1>
-          <p className="text-slate-500 text-sm mt-0.5">{users.length} total users</p>
+          <p className="text-slate-500 text-sm mt-0.5">{users.length} total users. Designers and clients are created here by admin only.</p>
         </div>
       </div>
+
+      <form onSubmit={createUser} className="layout-card p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <UserPlus className="h-5 w-5 text-indigo-500" />
+          <div>
+            <h2 className="font-semibold text-slate-900 dark:text-white">Create login ID</h2>
+            <p className="text-xs text-slate-500">Share this email and password with the designer or client after creating the account.</p>
+          </div>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+          <input
+            type="text"
+            required
+            placeholder="Full name"
+            className="input-field"
+            value={createForm.name}
+            onChange={(e) => setCreateForm((prev) => ({ ...prev, name: e.target.value }))}
+          />
+          <input
+            type="email"
+            required
+            placeholder="Login email"
+            className="input-field"
+            value={createForm.email}
+            onChange={(e) => setCreateForm((prev) => ({ ...prev, email: e.target.value }))}
+          />
+          <input
+            type="password"
+            required
+            minLength={6}
+            placeholder="Password"
+            className="input-field"
+            value={createForm.password}
+            onChange={(e) => setCreateForm((prev) => ({ ...prev, password: e.target.value }))}
+          />
+          <select
+            className="input-field"
+            value={createForm.role}
+            onChange={(e) => setCreateForm((prev) => ({ ...prev, role: e.target.value }))}
+          >
+            {ADMIN_CREATABLE_ROLES.map((r) => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
+          </select>
+          <input
+            type="text"
+            placeholder="Company name"
+            className="input-field"
+            value={createForm.companyName}
+            onChange={(e) => setCreateForm((prev) => ({ ...prev, companyName: e.target.value }))}
+          />
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button type="submit" isLoading={creating}>
+            Create ID
+          </Button>
+        </div>
+      </form>
 
       {/* Search */}
       <div className="relative max-w-sm">
@@ -144,8 +231,9 @@ export default function UserManagement() {
                             value={editRole}
                             onChange={(e) => setEditRole(e.target.value)}
                             className="text-xs bg-white dark:bg-slate-800 border border-indigo-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                            disabled={u.role === 'admin'}
                           >
-                            {ROLES.map((r) => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
+                            {(u.role === 'admin' ? ['admin'] : ROLES.filter((r) => r !== 'admin')).map((r) => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
                           </select>
                           <button onClick={() => saveRole(u._id)} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg" aria-label="Save">
                             <Check className="w-4 h-4" />
@@ -167,7 +255,7 @@ export default function UserManagement() {
                       <div className="flex items-center gap-2 justify-end">
                         <button
                           onClick={() => { setEditingId(u._id); setEditRole(u.role); }}
-                          disabled={editingId === u._id}
+                          disabled={editingId === u._id || u.role === 'admin'}
                           className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors disabled:opacity-30"
                           aria-label="Edit role"
                         >
@@ -175,7 +263,7 @@ export default function UserManagement() {
                         </button>
                         <button
                           onClick={() => deleteUser(u)}
-                          disabled={u._id === currentUser?.id || u._id === currentUser?._id}
+                          disabled={u.role === 'admin' || u._id === currentUser?.id || u._id === currentUser?._id}
                           className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                           aria-label="Delete user permanently"
                           title="Delete permanently"

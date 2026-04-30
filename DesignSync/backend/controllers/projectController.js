@@ -55,13 +55,15 @@ exports.createProject = asyncHandler(async (req, res, next) => {
     deadline
   });
 
+  const populatedProject = await Project.findById(project._id).populate('clientId designerIds', 'name email avatar');
+
   await notifyUsers(req, [clientId, ...assignedDesignerIds], {
     type: 'info',
     message: `Project "${project.title}" has been created`,
     link: `/studios/${project._id}`
   });
 
-  res.status(201).json({ success: true, data: project });
+  res.status(201).json({ success: true, data: populatedProject });
 });
 
 // @desc    Get single project

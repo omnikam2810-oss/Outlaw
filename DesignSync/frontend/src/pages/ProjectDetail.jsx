@@ -205,17 +205,17 @@ const ProjectDetail = () => {
         </div>
 
         {/* Right Panel - Viewer & Feedback */}
-        <div className="flex-1 flex flex-col relative overflow-hidden">
+        <div className="flex-1 min-w-0 flex flex-col relative overflow-hidden">
           {/* File viewer */}
-          <div className="flex-1 p-12 overflow-auto flex items-center justify-center relative">
+          <div className="flex-1 min-h-0 p-6 sm:p-10 overflow-hidden flex items-center justify-center relative">
             {activeDeliverable ? (
-              <div className="relative inline-flex items-center justify-center max-w-full max-h-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+              <div className="relative flex h-full w-full items-center justify-center bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
                 {activeDeliverable.type?.includes('image') ? (
                   <>
                     <img
                       src={activeDeliverable.fileUrl}
                       alt={activeDeliverable.title}
-                      className="max-w-full max-h-[85vh] object-contain cursor-crosshair"
+                      className="block h-full w-full object-contain cursor-crosshair"
                       onClick={(e) => {
                         const rect = e.target.getBoundingClientRect();
                         const x = ((e.clientX - rect.left) / rect.width) * 100;
