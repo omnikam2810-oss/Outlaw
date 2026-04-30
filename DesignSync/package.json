@@ -1,0 +1,12 @@
+{
+  "name": "designsync-root",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm run install:all && npm run start:all",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "start:all": "npx concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
