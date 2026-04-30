@@ -42,9 +42,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6f7f9] dark:bg-[#0b0d12] flex items-center justify-center p-4 sm:p-8">
+    <div className="min-h-screen bg-[#f6f7f9] dark:bg-[#0b0d12] flex items-start justify-center p-4 py-6 sm:p-8 lg:items-center">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl shadow-slate-200/70 dark:border-slate-800 dark:bg-[#11151c] dark:shadow-black/30 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="hidden lg:flex flex-col justify-between border-r border-slate-200 bg-slate-950 p-10 text-white dark:border-slate-800">
+        <section className="flex flex-col gap-8 border-b border-slate-800 bg-slate-950 p-6 text-white sm:p-8 lg:min-h-[560px] lg:justify-between lg:border-b-0 lg:border-r lg:border-slate-200 lg:p-10 dark:lg:border-slate-800">
           <div>
             <div className="flex items-center gap-3">
               <div className="h-11 w-11 rounded-lg bg-white text-slate-950 flex items-center justify-center">
@@ -55,9 +55,9 @@ const Login = () => {
                 <p className="text-xs text-slate-400">Enterprise design operations</p>
               </div>
             </div>
-            <div className="mt-16 max-w-sm">
+            <div className="mt-8 max-w-sm lg:mt-16">
               <p className="text-sm font-semibold uppercase tracking-wider text-teal-300">Secure workspace</p>
-              <h1 className="mt-4 text-4xl font-semibold leading-tight">A clean control center for design delivery.</h1>
+              <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">A clean control center for design delivery.</h1>
               <p className="mt-4 text-sm leading-6 text-slate-300">
                 Manage projects, academy reviews, client feedback, and approvals with a focused interface built for teams.
               </p>
@@ -74,16 +74,6 @@ const Login = () => {
         </section>
 
         <div className="p-6 sm:p-10">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="h-10 w-10 rounded-lg bg-slate-950 text-white flex items-center justify-center dark:bg-white dark:text-slate-950">
-              <Layers3 className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-semibold text-slate-950 dark:text-white">DesignSync</p>
-              <p className="text-xs text-slate-500">Enterprise design operations</p>
-            </div>
-          </div>
-
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
