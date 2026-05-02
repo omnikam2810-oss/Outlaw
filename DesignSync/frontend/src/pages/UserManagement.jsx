@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, Search, Edit2, Trash2, Check, X, UserPlus } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -33,6 +34,7 @@ export default function UserManagement() {
   });
   const { addToast } = useToast();
   const { user: currentUser } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let active = true;
@@ -214,7 +216,19 @@ export default function UserManagement() {
                 </tr>
               ) : (
                 filtered.map((u) => (
-                  <tr key={u._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <tr
+                    key={u._id}
+                    onClick={() => navigate(`/admin/users/${u._id}`, { state: { user: u } })}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.target !== e.currentTarget) return;
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        navigate(`/admin/users/${u._id}`, { state: { user: u } });
+                      }
+                    }}
+                  >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <Avatar src={u.avatar} fallback={u.name} size="8" />
@@ -230,15 +244,16 @@ export default function UserManagement() {
                           <select
                             value={editRole}
                             onChange={(e) => setEditRole(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
                             className="text-xs bg-white dark:bg-slate-800 border border-indigo-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                             disabled={u.role === 'admin'}
                           >
                             {(u.role === 'admin' ? ['admin'] : ROLES.filter((r) => r !== 'admin')).map((r) => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
                           </select>
-                          <button onClick={() => saveRole(u._id)} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg" aria-label="Save">
+                          <button onClick={(e) => { e.stopPropagation(); saveRole(u._id); }} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg" aria-label="Save">
                             <Check className="w-4 h-4" />
                           </button>
-                          <button onClick={() => setEditingId(null)} className="p-1 text-slate-500 hover:bg-slate-100 rounded-lg" aria-label="Cancel">
+                          <button onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="p-1 text-slate-500 hover:bg-slate-100 rounded-lg" aria-label="Cancel">
                             <X className="w-4 h-4" />
                           </button>
                         </div>
@@ -254,7 +269,7 @@ export default function UserManagement() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2 justify-end">
                         <button
-                          onClick={() => { setEditingId(u._id); setEditRole(u.role); }}
+                          onClick={(e) => { e.stopPropagation(); setEditingId(u._id); setEditRole(u.role); }}
                           disabled={editingId === u._id || u.role === 'admin'}
                           className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors disabled:opacity-30"
                           aria-label="Edit role"
@@ -262,7 +277,7 @@ export default function UserManagement() {
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => deleteUser(u)}
+                          onClick={(e) => { e.stopPropagation(); deleteUser(u); }}
                           disabled={u.role === 'admin' || u._id === currentUser?.id || u._id === currentUser?._id}
                           className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                           aria-label="Delete user permanently"

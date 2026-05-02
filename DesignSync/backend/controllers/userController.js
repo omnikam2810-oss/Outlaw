@@ -11,6 +11,13 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, count: users.length, data: users });
 });
 
+exports.getUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id).select('-passwordHash');
+  if (!user) return next(new ApiError(404, 'User not found'));
+
+  res.status(200).json({ success: true, data: user });
+});
+
 exports.getEnterpriseClients = asyncHandler(async (req, res, next) => {
   const clients = await User.find({ role: 'enterprise_client', isActive: { $ne: false } })
     .select('name email avatar companyName role')

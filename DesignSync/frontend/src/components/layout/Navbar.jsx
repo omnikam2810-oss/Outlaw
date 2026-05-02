@@ -186,13 +186,19 @@ const Navbar = ({ onMenuClick }) => {
         </div>
 
         {/* User Avatar */}
-        <div className="flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-white/70 dark:hover:bg-white/5 transition-all ml-1">
+        <button
+          type="button"
+          onClick={() => navigate('/settings')}
+          className="flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-white/70 dark:hover:bg-white/5 transition-all ml-1 text-left"
+          aria-label="Open profile"
+          title="Open profile"
+        >
           <Avatar src={user?.avatar} fallback={user?.name || 'User'} size="8" />
           <div className="hidden sm:block text-sm">
             <p className="font-semibold text-slate-700 dark:text-slate-200 leading-tight">{user?.name || 'Loading...'}</p>
             <p className="text-slate-500 text-xs hidden lg:block capitalize">{user?.role?.replace('_', ' ')}</p>
           </div>
-        </div>
+        </button>
       </div>
     </nav>
   );

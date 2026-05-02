@@ -9,6 +9,7 @@ const StudiosDashboard = React.lazy(() => import('../pages/StudiosDashboard'));
 const AcademyDashboard = React.lazy(() => import('../pages/AcademyDashboard'));
 const Notifications = React.lazy(() => import('../pages/Notifications'));
 const UserManagement = React.lazy(() => import('../pages/UserManagement'));
+const UserDetail = React.lazy(() => import('../pages/UserDetail'));
 const Settings = React.lazy(() => import('../pages/Settings'));
 
 export default function AppRoutes() {
@@ -26,6 +27,7 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<UserManagement />} />
+        <Route path="/admin/users/:id" element={<UserDetail />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={['admin', 'designer', 'enterprise_client']} />}>

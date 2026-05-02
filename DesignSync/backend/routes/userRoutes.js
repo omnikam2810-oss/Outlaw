@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUsers, getEnterpriseClients, getDesigners, createUser, updateUser, deleteUser, updateProfile, updatePassword } = require('../controllers/userController');
+const { getUsers, getUser, getEnterpriseClients, getDesigners, createUser, updateUser, deleteUser, updateProfile, updatePassword } = require('../controllers/userController');
 const { authenticate } = require('../middleware/auth');
 const { authorize } = require('../middleware/rbac');
 
@@ -17,6 +17,7 @@ router.use(authorize('admin')); // All below are admin only
 
 router.get('/', getUsers);
 router.post('/', createUser);
+router.get('/:id', getUser);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
 
