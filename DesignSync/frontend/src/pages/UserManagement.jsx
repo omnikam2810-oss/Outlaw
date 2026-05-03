@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, Edit2, Trash2, Check, X, UserPlus } from 'lucide-react';
+import { Users, Search, Edit2, Trash2, Check, X, UserPlus, Eye } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
@@ -101,6 +101,10 @@ export default function UserManagement() {
     } catch {
       addToast('Failed to delete user', 'error');
     }
+  };
+
+  const openUserDetails = (targetUser) => {
+    navigate(`/admin/users/${targetUser._id}`, { state: { user: targetUser } });
   };
 
   const filtered = users.filter((u) =>
@@ -218,14 +222,14 @@ export default function UserManagement() {
                 filtered.map((u) => (
                   <tr
                     key={u._id}
-                    onClick={() => navigate(`/admin/users/${u._id}`, { state: { user: u } })}
+                    onClick={() => openUserDetails(u)}
                     className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.target !== e.currentTarget) return;
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        navigate(`/admin/users/${u._id}`, { state: { user: u } });
+                        openUserDetails(u);
                       }
                     }}
                   >
@@ -268,6 +272,17 @@ export default function UserManagement() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2 justify-end">
+                        {u.role === 'enterprise_client' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); openUserDetails(u); }}
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                            aria-label={`View details for ${u.name || u.email}`}
+                            title="View client details"
+                          >
+                            <Eye className="h-4 w-4" />
+                            Details
+                          </button>
+                        )}
                         <button
                           onClick={(e) => { e.stopPropagation(); setEditingId(u._id); setEditRole(u.role); }}
                           disabled={editingId === u._id || u.role === 'admin'}
