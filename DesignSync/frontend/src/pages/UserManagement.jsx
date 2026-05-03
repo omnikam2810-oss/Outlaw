@@ -272,17 +272,15 @@ export default function UserManagement() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2 justify-end">
-                        {u.role === 'enterprise_client' && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); openUserDetails(u); }}
-                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
-                            aria-label={`View details for ${u.name || u.email}`}
-                            title="View client details"
-                          >
-                            <Eye className="h-4 w-4" />
-                            Details
-                          </button>
-                        )}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openUserDetails(u); }}
+                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                          aria-label={`View details for ${u.name || u.email}`}
+                          title="View user details"
+                        >
+                          <Eye className="h-4 w-4" />
+                          Details
+                        </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); setEditingId(u._id); setEditRole(u.role); }}
                           disabled={editingId === u._id || u.role === 'admin'}
