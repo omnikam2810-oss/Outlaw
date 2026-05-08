@@ -31,15 +31,15 @@ const Modal = ({ isOpen, onClose, title, children }) => {
       />
 
       {/* Modal Dialog */}
-      <div className="relative mt-20 w-full max-w-lg rounded-2xl bg-white dark:bg-slate-800 shadow-2xl modal-enter">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-5 py-4">
-          <h2 id="modal-title" className="text-lg font-semibold text-slate-800 dark:text-slate-100">{title}</h2>
+      <div className="relative mt-20 w-full max-w-lg overflow-hidden rounded-lg border border-white/80 bg-white shadow-2xl shadow-slate-950/20 modal-enter dark:border-white/10 dark:bg-[#0f1724]">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/70 px-5 py-4 dark:border-white/10 dark:bg-white/5">
+          <h2 id="modal-title" className="text-lg font-semibold text-slate-950 dark:text-slate-100">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-full p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-white hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white"
           >
-            <X className="h-5 w-5 text-slate-500" />
+            <X className="h-5 w-5" />
           </button>
         </div>
         <div className="px-5 py-4 overflow-y-auto max-h-[80vh]">

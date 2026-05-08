@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Folder, Plus, BriefcaseBusiness, CalendarDays } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { PageHeader } from '../components/ui/PageHeader';
 import api from '../api/axios';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/useAuth';
@@ -40,23 +41,13 @@ const ProjectList = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#11151c]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
-              <BriefcaseBusiness className="h-3.5 w-3.5 text-teal-500" />
-              Studios workspace
-            </div>
-            <h1 className="mt-4 text-2xl font-semibold text-slate-950 dark:text-white">{isClient ? 'Client Review' : 'Studios Projects'}</h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {isClient ? 'Review your assigned projects, inspect deliverables, and send feedback to the design team.' : 'Track client work, milestones, feedback, and approvals with a cleaner enterprise view.'}
-            </p>
-          </div>
-          <div className="text-sm text-slate-500 dark:text-slate-400">
-              <span className="font-semibold text-slate-900 dark:text-white">{projects.length}</span> {isClient ? 'review item' : 'active workspace item'}{projects.length === 1 ? '' : 's'}
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Studios workspace"
+        icon={BriefcaseBusiness}
+        title={isClient ? 'Client Review' : 'Studios Projects'}
+        description={isClient ? 'Review your assigned projects, inspect deliverables, and send feedback to the design team.' : 'Track client work, milestones, feedback, and approvals with a cleaner enterprise view.'}
+        meta={<div className="text-sm text-slate-500 dark:text-slate-400"><span className="font-semibold text-slate-950 dark:text-white">{projects.length}</span> {isClient ? 'review item' : 'active workspace item'}{projects.length === 1 ? '' : 's'}</div>}
+      />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="layout-card flex flex-col animate-pulse">
@@ -72,19 +63,13 @@ const ProjectList = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#11151c]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
-              <BriefcaseBusiness className="h-3.5 w-3.5 text-teal-500" />
-              Studios workspace
-            </div>
-            <h1 className="mt-4 text-2xl font-semibold text-slate-950 dark:text-white">{isClient ? 'Client Review' : 'Studios Projects'}</h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {isClient ? 'Open a project to inspect deliverables, pin comments, and approve or request changes.' : 'A focused board for briefs, client reviews, and delivery status.'}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+      <PageHeader
+        eyebrow="Studios workspace"
+        icon={BriefcaseBusiness}
+        title={isClient ? 'Client Review' : 'Studios Projects'}
+        description={isClient ? 'Open a project to inspect deliverables, pin comments, and approve or request changes.' : 'A focused board for briefs, client reviews, and delivery status.'}
+        actions={(
+          <>
             <div className="hidden sm:block rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-[#0f131a]">
               <span className="font-semibold text-slate-950 dark:text-white">{projects.length}</span>
               <span className="ml-1 text-slate-500">{isClient ? 'to review' : 'projects'}</span>
@@ -94,9 +79,9 @@ const ProjectList = () => {
                 <Plus className="w-4 h-4 mr-1" /> New Project
               </Button>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        )}
+      />
       
       {projects.length === 0 ? (
         <div className="layout-card py-20 text-center flex flex-col items-center justify-center border-dashed">
@@ -118,7 +103,7 @@ const ProjectList = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <div key={project._id} onClick={() => navigate(`/studios/${project._id}`)} className="group relative min-w-0 bg-white dark:bg-[#11151c] border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all cursor-pointer">
+            <div key={project._id} onClick={() => navigate(`/studios/${project._id}`)} className="layout-card group min-w-0 cursor-pointer p-5">
               <div className="flex items-start justify-between gap-3 text-sm">
                 <h3 className="min-w-0 flex-1 truncate font-semibold text-slate-950 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-white transition-colors">
                   {project.title}

@@ -4,7 +4,9 @@ import { useTheme } from '../context/useTheme';
 import api from '../api/axios';
 import { toast } from 'react-hot-toast';
 import { Button } from '../components/ui/Button';
-import { Moon, Sun, User, Lock } from 'lucide-react';
+import { Avatar } from '../components/ui/Avatar';
+import { PageHeader } from '../components/ui/PageHeader';
+import { Camera, Lock, Moon, Sun, Trash2, User } from 'lucide-react';
 
 const Settings = () => {
   const { user, updateUser } = useAuth();
@@ -16,6 +18,7 @@ const Settings = () => {
     newPassword: '',
     confirmPassword: ''
   });
+  const [photoSaving, setPhotoSaving] = useState(false);
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
@@ -27,6 +30,46 @@ const Settings = () => {
       toast.success('Profile updated');
     } catch {
       toast.error('Failed to update profile');
+    }
+  };
+
+  const handlePhotoUpload = async (file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please choose an image file');
+      return;
+    }
+
+    const uploadData = new FormData();
+    uploadData.append('avatar', file);
+
+    try {
+      setPhotoSaving(true);
+      const res = await api.put('/users/profile/avatar', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      updateUser(res.data.data);
+      toast.success('Profile photo updated');
+    } catch {
+      toast.error('Failed to update profile photo');
+    } finally {
+      setPhotoSaving(false);
+    }
+  };
+
+  const handlePhotoRemove = async () => {
+    try {
+      setPhotoSaving(true);
+      const res = await api.put('/users/profile', {
+        name: formData.name,
+        avatar: null
+      });
+      updateUser(res.data.data);
+      toast.success('Profile photo removed');
+    } catch {
+      toast.error('Failed to remove profile photo');
+    } finally {
+      setPhotoSaving(false);
     }
   };
 
@@ -57,10 +100,12 @@ const Settings = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-950 dark:text-white">Settings</h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Manage your profile, security, and workspace theme.</p>
-      </div>
+      <PageHeader
+        eyebrow="Account preferences"
+        icon={User}
+        title="Settings"
+        description="Manage your profile, security, and workspace theme."
+      />
       
       {/* Profile Update */}
       <div className="layout-card p-6">
@@ -68,8 +113,34 @@ const Settings = () => {
           <User className="h-5 w-5 text-slate-400" /> Profile Information
         </h2>
         <form onSubmit={handleProfileUpdate} className="space-y-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <Avatar src={user?.avatar} fallback={formData.name || user?.email || 'User'} size="16" className="h-16 w-16" />
+            <div className="flex flex-wrap gap-2">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                <Camera className="h-4 w-4" />
+                {photoSaving ? 'Uploading...' : 'Change photo'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  disabled={photoSaving}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = '';
+                    handlePhotoUpload(file);
+                  }}
+                />
+              </label>
+              {user?.avatar && (
+                <Button type="button" variant="secondary" onClick={handlePhotoRemove} disabled={photoSaving}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Remove photo
+                </Button>
+              )}
+            </div>
+          </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Name</label>
+            <label className="form-label">Name</label>
             <input
               type="text"
               value={formData.name}
@@ -79,7 +150,7 @@ const Settings = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Email</label>
+            <label className="form-label">Email</label>
             <input
               type="email"
               value={formData.email}
@@ -100,7 +171,7 @@ const Settings = () => {
         </h2>
         <form onSubmit={handlePasswordChange} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Current Password</label>
+            <label className="form-label">Current Password</label>
             <input
               type="password"
               value={formData.currentPassword}
@@ -110,7 +181,7 @@ const Settings = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">New Password</label>
+            <label className="form-label">New Password</label>
             <input
               type="password"
               value={formData.newPassword}
@@ -120,7 +191,7 @@ const Settings = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Confirm New Password</label>
+            <label className="form-label">Confirm New Password</label>
             <input
               type="password"
               value={formData.confirmPassword}

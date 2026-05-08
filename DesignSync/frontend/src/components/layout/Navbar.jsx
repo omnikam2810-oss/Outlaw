@@ -93,12 +93,12 @@ const Navbar = ({ onMenuClick }) => {
   const topFive = notifications.slice(0, 5);
 
   return (
-    <nav className="h-16 border-b border-white/70 dark:border-white/10 bg-white/70 dark:bg-[#0b111a]/90 backdrop-blur-2xl sticky top-0 z-40 flex items-center justify-between px-4 sm:px-6 shadow-sm shadow-slate-900/5">
+    <nav className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/80 px-4 shadow-sm shadow-slate-900/5 backdrop-blur-2xl dark:border-white/10 dark:bg-[#07101d]/90 sm:px-6">
       <div className="flex items-center gap-4">
         <button
           onClick={onMenuClick}
           aria-label="Open menu"
-          className="md:hidden p-2 text-slate-600 hover:bg-white/80 rounded-lg dark:text-slate-300 dark:hover:bg-white/10"
+          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 md:hidden"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -109,7 +109,7 @@ const Navbar = ({ onMenuClick }) => {
         <button
           onClick={toggleTheme}
           aria-label="Toggle dark mode"
-          className="p-2 text-slate-600 hover:bg-white/80 hover:shadow-sm rounded-lg dark:text-slate-300 dark:hover:bg-white/10 transition-all"
+          className="rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:shadow-sm dark:text-slate-300 dark:hover:bg-white/10"
         >
           {theme === 'dark' ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
         </button>
@@ -119,7 +119,7 @@ const Navbar = ({ onMenuClick }) => {
           <button
             onClick={() => setBellOpen((o) => !o)}
             aria-label="Notifications"
-            className="relative p-2 text-slate-600 hover:bg-white/80 hover:shadow-sm rounded-lg dark:text-slate-300 dark:hover:bg-white/10 transition-all"
+            className="relative rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:shadow-sm dark:text-slate-300 dark:hover:bg-white/10"
           >
             <Bell className="h-5 w-5" />
             {unreadCount > 0 && (
@@ -130,7 +130,7 @@ const Navbar = ({ onMenuClick }) => {
           </button>
 
           {bellOpen && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-white/95 dark:bg-[#101722]/95 border border-white/70 dark:border-white/10 rounded-lg shadow-2xl shadow-slate-900/20 overflow-hidden z-50 backdrop-blur-2xl">
+            <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-lg border border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/20 backdrop-blur-2xl dark:border-white/10 dark:bg-[#0f1724]/95">
               <div className="px-4 py-3 border-b border-slate-200/70 dark:border-white/10 flex items-center justify-between gap-3 bg-slate-50/60 dark:bg-white/5">
                 <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">Notifications</p>
                 <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ const Navbar = ({ onMenuClick }) => {
         <button
           type="button"
           onClick={() => navigate('/settings')}
-          className="flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-white/70 dark:hover:bg-white/5 transition-all ml-1 text-left"
+          className="ml-1 flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-left transition-all hover:bg-slate-100 dark:hover:bg-white/5"
           aria-label="Open profile"
           title="Open profile"
         >

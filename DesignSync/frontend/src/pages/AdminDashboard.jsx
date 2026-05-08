@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Users, Folder, BookOpen, Clock, Activity, ShieldCheck } from 'lucide-react';
 import api from '../api/axios';
 import { toast } from 'react-hot-toast';
+import { PageHeader } from '../components/ui/PageHeader';
 
 const AdminDashboard = () => {
   const [metrics, setMetrics] = useState({});
@@ -56,18 +57,12 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#11151c]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-              Enterprise command center
-            </div>
-            <h1 className="mt-4 text-2xl font-semibold text-slate-950 dark:text-white">Admin Dashboard</h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Monitor workspace health, users, and active delivery across DesignSync.</p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Enterprise command center"
+        icon={ShieldCheck}
+        title="Admin Dashboard"
+        description="Monitor workspace health, users, and active delivery across DesignSync."
+      />
       
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -77,7 +72,7 @@ const AdminDashboard = () => {
           { label: 'Total Users', value: metrics.totalUsers, icon: BookOpen, color: 'text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-900/30' },
           { label: 'Active Projects', value: metrics.activeProjects, icon: Clock, color: 'text-amber-700 bg-amber-50 dark:text-amber-300 dark:bg-amber-900/30' },
         ].map((stat, i) => (
-          <div key={i} className="layout-card p-4">
+          <div key={i} className="layout-card p-5">
             <div className="flex items-start justify-between">
               <div className={`rounded-lg p-2.5 ${stat.color}`}>
                 <stat.icon className="h-5 w-5" />
@@ -85,7 +80,7 @@ const AdminDashboard = () => {
             </div>
             <div className="mt-5">
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
-              <h3 className="mt-1 text-2xl font-semibold text-slate-950 dark:text-white">{stat.value ?? 0}</h3>
+              <h3 className="mt-1 text-3xl font-semibold text-slate-950 dark:text-white">{stat.value ?? 0}</h3>
             </div>
           </div>
         ))}

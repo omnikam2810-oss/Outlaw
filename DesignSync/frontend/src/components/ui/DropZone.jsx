@@ -47,13 +47,13 @@ export default function DropZone({ file, setFile }) {
     <div className="space-y-3">
       <div 
         {...getRootProps()} 
-        className={`border-2 border-dashed rounded-lg p-8 cursor-pointer transition-colors flex flex-col items-center justify-center text-center
-          ${isDragActive ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500'}
+        className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center transition-all
+          ${isDragActive ? 'border-teal-500 bg-teal-50 shadow-inner dark:bg-teal-500/10' : 'border-slate-300 bg-slate-50/70 hover:border-teal-500 hover:bg-white dark:border-slate-700 dark:bg-white/5 dark:hover:border-teal-400 dark:hover:bg-white/10'}
         `}
       >
         <input {...getInputProps()} />
-        <UploadCloud className="h-10 w-10 text-slate-400 mb-4" />
-        <p className="text-slate-600 dark:text-slate-300 font-medium">Drag files here or click to browse</p>
+        <UploadCloud className="mb-4 h-10 w-10 text-teal-600 dark:text-teal-300" />
+        <p className="font-semibold text-slate-800 dark:text-slate-200">Drag files here or click to browse</p>
         <p className="text-sm text-slate-500 mt-2">Images, PDF, ZIP up to 50MB</p>
       </div>
 

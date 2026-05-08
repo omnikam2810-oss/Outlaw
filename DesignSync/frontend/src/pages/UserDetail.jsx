@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Building2, CalendarDays, Mail, Shield } from 'lucide-react';
+import { ArrowLeft, Building2, CalendarDays, Camera, Mail, Shield, Trash2 } from 'lucide-react';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { useToast } from '../components/ui/useToast';
 import api from '../api/axios';
 
 const ROLE_BADGE = {
@@ -28,7 +29,9 @@ export default function UserDetail() {
   const location = useLocation();
   const [user, setUser] = useState(location.state?.user || null);
   const [loading, setLoading] = useState(!location.state?.user);
+  const [photoSaving, setPhotoSaving] = useState(false);
   const [error, setError] = useState('');
+  const { addToast } = useToast();
 
   useEffect(() => {
     let active = true;
@@ -82,6 +85,43 @@ export default function UserDetail() {
     );
   }
 
+  const uploadPhoto = async (file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      addToast('Please choose an image file for the profile photo', 'error');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      setPhotoSaving(true);
+      const { data } = await api.put(`/users/${id}/avatar`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setUser(data.data);
+      addToast('Profile photo updated', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to update profile photo', 'error');
+    } finally {
+      setPhotoSaving(false);
+    }
+  };
+
+  const removePhoto = async () => {
+    try {
+      setPhotoSaving(true);
+      const { data } = await api.put(`/users/${id}`, { avatar: null });
+      setUser(data.data);
+      addToast('Profile photo removed', 'success');
+    } catch {
+      addToast('Failed to remove profile photo', 'error');
+    } finally {
+      setPhotoSaving(false);
+    }
+  };
+
   const detailItems = [
     { icon: Mail, label: 'Email', value: user.email || '-' },
     { icon: Shield, label: 'Role', value: user.role?.replace('_', ' ') || '-', valueClassName: 'capitalize' },
@@ -106,9 +146,32 @@ export default function UserDetail() {
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
             </div>
           </div>
-          <Badge variant={ROLE_BADGE[user.role] || 'secondary'} className="capitalize w-fit">
-            {user.role?.replace('_', ' ') || 'user'}
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+              <Camera className="h-4 w-4" />
+              {photoSaving ? 'Uploading...' : 'Change photo'}
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                disabled={photoSaving}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = '';
+                  uploadPhoto(file);
+                }}
+              />
+            </label>
+            {user.avatar && (
+              <Button type="button" variant="secondary" onClick={removePhoto} disabled={photoSaving}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Remove photo
+              </Button>
+            )}
+            <Badge variant={ROLE_BADGE[user.role] || 'secondary'} className="capitalize w-fit">
+              {user.role?.replace('_', ' ') || 'user'}
+            </Badge>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">

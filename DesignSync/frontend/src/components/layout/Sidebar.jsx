@@ -45,12 +45,12 @@ const Sidebar = ({ isOpen, onClose }) => {
       />
       
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 w-64 overflow-hidden bg-white/90 dark:bg-[#0b111a]/90 border-r border-white/70 dark:border-white/10 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 overflow-hidden border-r border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-transform duration-300 dark:border-white/10 dark:bg-[#07101d]/95 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_20%_0%,rgba(20,184,166,0.18),transparent_18rem),radial-gradient(circle_at_90%_10%,rgba(245,158,11,0.12),transparent_14rem)] dark:bg-[radial-gradient(circle_at_15%_0%,rgba(20,184,166,0.16),transparent_18rem),radial-gradient(circle_at_85%_5%,rgba(99,102,241,0.18),transparent_16rem)]" />
-        <div className="relative h-20 flex items-center justify-between px-5 border-b border-slate-200/70 dark:border-white/10">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[linear-gradient(180deg,rgba(15,23,42,0.05),transparent)] dark:bg-[linear-gradient(180deg,rgba(20,184,166,0.08),transparent)]" />
+        <div className="relative h-20 flex items-center justify-between px-5 border-b border-slate-200/80 dark:border-white/10">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="h-10 w-10 rounded-lg bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center shadow-lg shadow-teal-500/10 ring-1 ring-white/40 dark:ring-white/20">
+            <div className="h-10 w-10 rounded-lg bg-slate-950 text-white dark:bg-teal-300 dark:text-slate-950 flex items-center justify-center shadow-lg shadow-slate-900/10 ring-1 ring-white/40 dark:ring-white/20">
               <Layers3 className="h-5 w-5" />
             </div>
             <div className="min-w-0">
@@ -64,7 +64,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
         
         <div className="relative px-5 py-4 border-b border-slate-100/80 dark:border-white/10">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-300">Workspace</p>
+          <p className="text-[11px] font-semibold uppercase text-teal-700 dark:text-teal-300">Workspace</p>
           <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">Design operations, approvals, and academy work in one clean system.</p>
         </div>
 
@@ -77,8 +77,8 @@ const Sidebar = ({ isOpen, onClose }) => {
               className={({ isActive }) => 
                 `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive 
-                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-lg shadow-slate-900/12 dark:shadow-black/30' 
-                    : 'text-slate-600 hover:bg-white/80 hover:shadow-sm dark:text-slate-400 dark:hover:bg-white/5 hover:text-slate-950 dark:hover:text-slate-200'
+                    ? 'bg-slate-950 text-white shadow-lg shadow-slate-900/12 dark:bg-teal-300 dark:text-slate-950 dark:shadow-black/30' 
+                    : 'text-slate-600 hover:bg-slate-100 hover:shadow-sm dark:text-slate-400 dark:hover:bg-white/5 hover:text-slate-950 dark:hover:text-slate-200'
                 }`
               }
             >

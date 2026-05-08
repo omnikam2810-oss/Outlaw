@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, Edit2, Trash2, Check, X, UserPlus, Eye } from 'lucide-react';
+import { Users, Search, Edit2, Trash2, Check, X, UserPlus, Eye, Camera } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
+import { PageHeader } from '../components/ui/PageHeader';
 import api from '../api/axios';
 import { useToast } from '../components/ui/useToast';
 import { useAuth } from '../context/useAuth';
@@ -25,6 +26,8 @@ export default function UserManagement() {
   const [editingId, setEditingId] = useState(null);
   const [editRole, setEditRole] = useState('');
   const [creating, setCreating] = useState(false);
+  const [uploadingPhotoId, setUploadingPhotoId] = useState(null);
+  const [createPhoto, setCreatePhoto] = useState(null);
   const [createForm, setCreateForm] = useState({
     name: '',
     email: '',
@@ -66,6 +69,32 @@ export default function UserManagement() {
     }
   };
 
+  const uploadPhoto = async (targetUser, file) => {
+    if (!file) return targetUser;
+    if (!file.type.startsWith('image/')) {
+      addToast('Please choose an image file for the profile photo', 'error');
+      return targetUser;
+    }
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    setUploadingPhotoId(targetUser._id);
+    try {
+      const { data } = await api.put(`/users/${targetUser._id}/avatar`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setUsers((prev) => prev.map((u) => u._id === targetUser._id ? data.data : u));
+      addToast('Profile photo updated', 'success');
+      return data.data;
+    } catch (err) {
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to update profile photo', 'error');
+      return targetUser;
+    } finally {
+      setUploadingPhotoId(null);
+    }
+  };
+
   const createUser = async (e) => {
     e.preventDefault();
     try {
@@ -78,8 +107,10 @@ export default function UserManagement() {
         companyName: createForm.companyName.trim(),
       };
       const { data } = await api.post('/users', payload);
-      setUsers((prev) => [data.data, ...prev]);
+      const createdUser = createPhoto ? await uploadPhoto(data.data, createPhoto) : data.data;
+      setUsers((prev) => [createdUser, ...prev.filter((u) => u._id !== createdUser._id)]);
       setCreateForm({ name: '', email: '', password: '', role: 'designer', companyName: '' });
+      setCreatePhoto(null);
       addToast('User ID created successfully', 'success');
     } catch (err) {
       addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to create user', 'error');
@@ -114,24 +145,22 @@ export default function UserManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Users className="w-6 h-6 text-indigo-500" /> User Management
-          </h1>
-          <p className="text-slate-500 text-sm mt-0.5">{users.length} total users. Designers and clients are created here by admin only.</p>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Identity administration"
+        icon={Users}
+        title="User Management"
+        description={`${users.length} total users. Designers and clients are created here by admin only.`}
+      />
 
       <form onSubmit={createUser} className="layout-card p-5">
         <div className="mb-4 flex items-center gap-2">
           <UserPlus className="h-5 w-5 text-indigo-500" />
           <div>
-            <h2 className="font-semibold text-slate-900 dark:text-white">Create login ID</h2>
+          <h2 className="font-semibold text-slate-900 dark:text-white">Create login ID</h2>
             <p className="text-xs text-slate-500">Share this email and password with the designer or client after creating the account.</p>
           </div>
         </div>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
           <input
             type="text"
             required
@@ -171,6 +200,16 @@ export default function UserManagement() {
             value={createForm.companyName}
             onChange={(e) => setCreateForm((prev) => ({ ...prev, companyName: e.target.value }))}
           />
+          <label className="input-field flex cursor-pointer items-center gap-2 text-slate-500">
+            <Camera className="h-4 w-4 shrink-0" />
+            <span className="truncate">{createPhoto?.name || 'Profile photo'}</span>
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => setCreatePhoto(e.target.files?.[0] || null)}
+            />
+          </label>
         </div>
         <div className="mt-4 flex justify-end">
           <Button type="submit" isLoading={creating}>
@@ -185,21 +224,21 @@ export default function UserManagement() {
         <input
           type="text"
           placeholder="Search by name or email..."
-          className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          className="input-field pl-10"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
       {/* Table */}
-      <div className="layout-card overflow-hidden">
+      <div className="table-shell">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-600 dark:text-slate-400">User</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-600 dark:text-slate-400">Role</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-600 dark:text-slate-400">Joined</th>
+              <tr className="border-b border-slate-200 bg-slate-50/80 dark:border-white/10 dark:bg-white/5">
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">User</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Role</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Joined</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
@@ -281,6 +320,26 @@ export default function UserManagement() {
                           <Eye className="h-4 w-4" />
                           Details
                         </button>
+                        <label
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                          title="Change profile photo"
+                          aria-label={`Change profile photo for ${u.name || u.email}`}
+                        >
+                          <Camera className="h-4 w-4" />
+                          {uploadingPhotoId === u._id ? 'Uploading...' : 'Photo'}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="sr-only"
+                            disabled={uploadingPhotoId === u._id}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              e.target.value = '';
+                              uploadPhoto(u, file);
+                            }}
+                          />
+                        </label>
                         <button
                           onClick={(e) => { e.stopPropagation(); setEditingId(u._id); setEditRole(u.role); }}
                           disabled={editingId === u._id || u.role === 'admin'}

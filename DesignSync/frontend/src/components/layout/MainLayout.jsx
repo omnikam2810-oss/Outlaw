@@ -18,7 +18,7 @@ const MainLayout = ({ children }) => {
           // Ensure content is scrollable on mobile when sidebar drawer opens
           onClick={() => isSidebarOpen && setSidebarOpen(false)}
         >
-          <div className="fade-in">
+          <div className="fade-in pb-8">
             {children}
           </div>
         </main>

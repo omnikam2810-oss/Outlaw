@@ -3,6 +3,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const bcrypt = require('bcryptjs');
 const { notifyUsers } = require('../utils/notify');
+const { uploadToCloudinary } = require('../services/storageService');
 
 const ADMIN_MANAGED_ROLES = ['designer', 'enterprise_client', 'academy_student'];
 
@@ -97,6 +98,23 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: user });
 });
 
+exports.updateUserAvatar = asyncHandler(async (req, res, next) => {
+  const existingUser = await User.findById(req.params.id);
+  if (!existingUser) return next(new ApiError(404, 'User not found'));
+  if (!req.file) return next(new ApiError(400, 'Please upload a profile photo'));
+  if (!req.file.mimetype?.startsWith('image/')) {
+    return next(new ApiError(400, 'Profile photo must be an image'));
+  }
+
+  const result = await uploadToCloudinary(req.file.buffer, req.file.mimetype, 'designsync-avatars', req.file.originalname);
+  const user = await User.findByIdAndUpdate(req.params.id, { avatar: result.url }, {
+    new: true,
+    runValidators: true
+  }).select('-passwordHash');
+
+  res.status(200).json({ success: true, data: user });
+});
+
 exports.deleteUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) return next(new ApiError(404, 'User not found'));
@@ -113,8 +131,26 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  const { name } = req.body;
-  const user = await User.findByIdAndUpdate(req.user._id, { name }, {
+  const { name, avatar } = req.body;
+  const updates = { name };
+  if (Object.prototype.hasOwnProperty.call(req.body, 'avatar')) updates.avatar = avatar;
+
+  const user = await User.findByIdAndUpdate(req.user._id, updates, {
+    new: true,
+    runValidators: true
+  }).select('-passwordHash');
+
+  res.status(200).json({ success: true, data: user });
+});
+
+exports.updateProfileAvatar = asyncHandler(async (req, res, next) => {
+  if (!req.file) return next(new ApiError(400, 'Please upload a profile photo'));
+  if (!req.file.mimetype?.startsWith('image/')) {
+    return next(new ApiError(400, 'Profile photo must be an image'));
+  }
+
+  const result = await uploadToCloudinary(req.file.buffer, req.file.mimetype, 'designsync-avatars', req.file.originalname);
+  const user = await User.findByIdAndUpdate(req.user._id, { avatar: result.url }, {
     new: true,
     runValidators: true
   }).select('-passwordHash');

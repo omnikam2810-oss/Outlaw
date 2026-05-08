@@ -42,9 +42,9 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6f7f9] dark:bg-[#0b0d12] flex items-start justify-center p-4 py-6 sm:p-8 lg:items-center">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl shadow-slate-200/70 dark:border-slate-800 dark:bg-[#11151c] dark:shadow-black/30 lg:grid-cols-[0.95fr_1.05fr]">
-        <section className="flex flex-col gap-8 border-b border-slate-800 bg-slate-950 p-6 text-white sm:p-8 lg:min-h-[560px] lg:justify-between lg:border-b-0 lg:border-r lg:border-slate-200 lg:p-10 dark:lg:border-slate-800">
+    <div className="flex min-h-screen items-start justify-center bg-[#f5f7fb] p-4 py-6 dark:bg-[#070b13] sm:p-8 lg:items-center">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl shadow-slate-900/12 dark:border-white/10 dark:bg-[#0f1724] dark:shadow-black/30 lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="flex flex-col gap-8 border-b border-slate-800 bg-slate-950 p-6 text-white sm:p-8 lg:min-h-[560px] lg:justify-between lg:border-b-0 lg:border-r lg:border-slate-200 lg:p-10 dark:lg:border-white/10">
           <div>
             <div className="flex items-center gap-3">
               <div className="h-11 w-11 rounded-lg bg-white text-slate-950 flex items-center justify-center">
@@ -56,7 +56,7 @@ const Register = () => {
               </div>
             </div>
             <div className="mt-8 lg:mt-16">
-              <p className="text-sm font-semibold uppercase tracking-wider text-amber-300">Student access</p>
+              <p className="text-sm font-semibold uppercase text-amber-300">Student access</p>
               <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">Start academy work with a verified student account.</h1>
               <p className="mt-4 text-sm leading-6 text-slate-300">
                 Designers and clients sign in with IDs created by the admin, while students can register directly for academy assignments.

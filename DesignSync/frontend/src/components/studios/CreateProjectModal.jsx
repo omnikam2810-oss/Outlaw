@@ -67,29 +67,29 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Project">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Project Title</label>
+          <label className="form-label">Project Title</label>
           <input 
             type="text" 
             required 
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field"
             value={formData.title}
             onChange={e => setFormData({ ...formData, title: e.target.value })}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Description (Optional)</label>
+          <label className="form-label">Description (Optional)</label>
           <textarea 
             rows={2}
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field resize-none"
             value={formData.description}
             onChange={e => setFormData({ ...formData, description: e.target.value })}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Assign Client</label>
+          <label className="form-label">Assign Client</label>
           <select 
             required
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field"
             value={formData.clientId}
             onChange={e => setFormData({ ...formData, clientId: e.target.value })}
           >
@@ -101,12 +101,12 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
         </div>
         {isAdmin && (
           <div>
-            <label className="block text-sm font-medium mb-1">Assign Designer</label>
-            <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-100 p-2 dark:border-slate-600 dark:bg-slate-800">
+            <label className="form-label">Assign Designer</label>
+            <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-white/5">
               {designers.length === 0 ? (
                 <p className="px-1 py-2 text-sm text-slate-500">No designer accounts found.</p>
               ) : designers.map((designer) => (
-                <label key={designer._id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-white dark:hover:bg-slate-700">
+                <label key={designer._id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-white dark:hover:bg-white/10">
                   <input
                     type="checkbox"
                     className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-400"
@@ -123,10 +123,10 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
           </div>
         )}
         <div>
-          <label className="block text-sm font-medium mb-1">Deadline</label>
+          <label className="form-label">Deadline</label>
           <input 
             type="date"
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field"
             value={formData.deadline}
             onChange={e => setFormData({ ...formData, deadline: e.target.value })}
           />

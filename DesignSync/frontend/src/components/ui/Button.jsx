@@ -2,13 +2,13 @@ import React from 'react';
 import { cn } from '../../utils/cn';
 
 const Button = React.forwardRef(({ className, variant = 'primary', size = 'md', isLoading, asChild = false, children, ...props }, ref) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/15 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
+  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold tracking-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-teal-300/50 dark:focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
   
   const variants = {
-    primary: 'bg-slate-950 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/12 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 dark:shadow-black/25',
-    secondary: 'bg-white/90 text-slate-700 border border-white/80 hover:bg-white hover:shadow-md shadow-sm dark:bg-white/5 dark:text-slate-200 dark:border-white/10 dark:hover:bg-white/10',
-    danger: 'bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-100 hover:shadow-sm dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-400/20 dark:hover:bg-rose-500/15',
-    ghost: 'hover:bg-white/80 hover:text-slate-900 text-slate-600 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-50',
+    primary: 'bg-slate-950 text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800 hover:shadow-md dark:bg-teal-300 dark:text-slate-950 dark:hover:bg-teal-200',
+    secondary: 'border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10',
+    danger: 'border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 hover:text-rose-800 dark:border-rose-400/20 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/15',
+    ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-50',
   };
 
   const sizes = {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, CheckCircle, MessageSquare, Info, Check, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { PageHeader } from '../components/ui/PageHeader';
 import api from '../api/axios';
 import { useToast } from '../components/ui/useToast';
 import socket from '../api/socket';
@@ -84,32 +85,29 @@ const Notifications = () => {
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Bell className="w-6 h-6 text-indigo-500" />
-            Notifications
-          </h1>
-          {unread > 0 && (
-            <p className="text-sm text-slate-500 mt-0.5">{unread} unread notification{unread !== 1 ? 's' : ''}</p>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
+      <PageHeader
+        eyebrow="Workspace alerts"
+        icon={Bell}
+        title="Notifications"
+        description={unread > 0 ? `${unread} unread notification${unread !== 1 ? 's' : ''}` : 'Review project, academy, and account updates.'}
+        actions={(
+          <>
           <Button variant="secondary" size="sm" onClick={markAll} disabled={unread === 0}>
             <Check className="w-4 h-4 mr-1" /> Mark all as read
           </Button>
           <Button variant="danger" size="sm" onClick={clearAll} disabled={notifications.length === 0}>
             <Trash2 className="w-4 h-4 mr-1" /> Clear
           </Button>
-        </div>
-      </div>
+          </>
+        )}
+      />
 
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => <div key={i} className="h-20 skeleton rounded-xl" />)}
         </div>
       ) : notifications.length === 0 ? (
-        <div className="text-center py-20 text-slate-400">
+        <div className="layout-card text-center py-20 text-slate-400">
           <Bell className="w-12 h-12 mx-auto mb-3 opacity-20" />
           <p className="text-sm">You're all caught up!</p>
         </div>

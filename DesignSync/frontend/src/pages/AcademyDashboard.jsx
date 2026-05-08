@@ -7,6 +7,7 @@ import DropZone from '../components/ui/DropZone';
 import MentorReviewModal from '../components/studios/MentorReviewModal';
 import CreateAssignmentModal from '../components/academy/CreateAssignmentModal';
 import { Avatar } from '../components/ui/Avatar';
+import { PageHeader } from '../components/ui/PageHeader';
 import api from '../api/axios';
 import { useAuth } from '../context/useAuth';
 import { useToast } from '../components/ui/useToast';
@@ -54,10 +55,10 @@ function SubmitModal({ isOpen, onClose, assignment, onSubmitted }) {
       <div className="space-y-4">
         <DropZone file={file} setFile={setFile} />
         <div>
-          <label className="block text-sm font-medium mb-1">Notes to mentor (optional)</label>
+          <label className="form-label">Notes to mentor (optional)</label>
           <textarea
             rows={3}
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+            className="input-field resize-none"
             placeholder="Add any context for your mentor..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -155,27 +156,17 @@ const AcademyDashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#11151c]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
-              <GraduationCap className="h-3.5 w-3.5 text-indigo-500" />
-              Academy workspace
-            </div>
-            <h1 className="mt-4 text-2xl font-semibold text-slate-950 dark:text-white flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-slate-700 dark:text-slate-200" /> Academy
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              {isStudent ? 'A focused view for assignments, submissions, and progress.' : 'Review student work and keep learning paths moving.'}
-            </p>
-          </div>
-          {isMentor && (
+      <PageHeader
+        eyebrow="Academy workspace"
+        icon={GraduationCap}
+        title="Academy"
+        description={isStudent ? 'A focused view for assignments, submissions, and progress.' : 'Review student work and keep learning paths moving.'}
+        actions={isMentor && (
             <Button size="sm" onClick={() => setCreateOpen(true)}>
               + New Assignment
             </Button>
-          )}
-        </div>
-      </div>
+        )}
+      />
 
       <CreateAssignmentModal
         isOpen={isCreateOpen}
@@ -192,9 +183,9 @@ const AcademyDashboard = () => {
           {[1, 2, 3].map((i) => <div key={i} className="h-40 skeleton rounded-2xl" />)}
         </div>
       ) : assignments.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-20" />
-          <p>No assignments available yet.</p>
+        <div className="layout-card py-16 text-center text-slate-400">
+          <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
+          <p className="text-sm font-medium">No assignments available yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
