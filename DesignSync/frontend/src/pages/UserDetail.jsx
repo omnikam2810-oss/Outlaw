@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Building2, CalendarDays, Mail, Shield, UserRound } from 'lucide-react';
+import { ArrowLeft, Building2, CalendarDays, Mail, Shield } from 'lucide-react';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -84,11 +84,10 @@ export default function UserDetail() {
 
   const detailItems = [
     { icon: Mail, label: 'Email', value: user.email || '-' },
-    { icon: Shield, label: 'Role', value: user.role?.replace('_', ' ') || '-' },
+    { icon: Shield, label: 'Role', value: user.role?.replace('_', ' ') || '-', valueClassName: 'capitalize' },
     { icon: Building2, label: 'Company', value: user.companyName || '-' },
     { icon: CalendarDays, label: 'Joined', value: formatDate(user.createdAt) },
     { icon: CalendarDays, label: 'Last updated', value: formatDate(user.updatedAt) },
-    { icon: UserRound, label: 'Status', value: user.isActive === false ? 'Inactive' : 'Active' },
   ];
 
   return (
@@ -119,7 +118,9 @@ export default function UserDetail() {
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </div>
-              <p className="mt-2 text-sm font-medium capitalize text-slate-900 dark:text-slate-100 break-words">{item.value}</p>
+              <p className={`mt-2 text-sm font-medium text-slate-900 dark:text-slate-100 break-words ${item.valueClassName || ''}`}>
+                {item.value}
+              </p>
             </div>
           ))}
         </div>
