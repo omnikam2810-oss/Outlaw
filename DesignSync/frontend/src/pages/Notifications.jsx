@@ -17,8 +17,8 @@ function timeAgo(date) {
 
 const ICON_MAP = {
   success: { icon: CheckCircle, bg: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30' },
-  message: { icon: MessageSquare, bg: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30' },
-  info: { icon: Info, bg: 'bg-sky-100 text-sky-600 dark:bg-sky-900/30' },
+  message: { icon: MessageSquare, bg: 'bg-indigo-100 text-indigo-600 dark:bg-blue-500/10 dark:text-blue-400' },
+  info: { icon: Info, bg: 'bg-teal-50 text-teal-700 dark:bg-sky-900/30' },
 };
 
 const Notifications = () => {
@@ -120,7 +120,7 @@ const Notifications = () => {
               <button
                 key={n._id}
                 onClick={() => markOne(n)}
-                className={`layout-card p-4 flex gap-4 items-start w-full text-left hover:shadow-md transition-shadow ${!n.isRead ? 'border-indigo-400 dark:border-indigo-600 border-l-4' : ''}`}
+                className={`layout-card p-4 flex gap-4 items-start w-full text-left hover:shadow-md transition-shadow ${!n.isRead ? 'border-teal-500 dark:border-blue-500 border-l-4' : ''}`}
               >
                 <div className={`p-2 rounded-full mt-0.5 shrink-0 ${config.bg}`}>
                   <Icon className="w-4 h-4" />
@@ -131,7 +131,7 @@ const Notifications = () => {
                   </p>
                   <p className="text-xs text-slate-400 mt-1">{timeAgo(n.createdAt)}</p>
                 </div>
-                {!n.isRead && <span className="w-2.5 h-2.5 bg-indigo-500 rounded-full mt-2 shrink-0" />}
+                {!n.isRead && <span className="w-2.5 h-2.5 bg-teal-600 rounded-full mt-2 shrink-0" />}
               </button>
             );
           })}

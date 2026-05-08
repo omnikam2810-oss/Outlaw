@@ -119,7 +119,7 @@ const ProjectDetail = () => {
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 lg:-mx-8 lg:-mt-8">
       {/* Top Bar */}
-      <div className="bg-white dark:bg-[#111111] border-b border-slate-200/80 dark:border-slate-800 px-6 py-3 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.02)] sticky top-0 z-10 shrink-0">
+      <div className="bg-white dark:bg-[#202225] border-b border-slate-200/80 dark:border-white/[0.08] px-6 py-3 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.02)] sticky top-0 z-10 shrink-0">
         <div>
           <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
             {loading ? <div className="h-6 w-48 skeleton" /> : project?.title || `Project ${id}`}
@@ -165,11 +165,11 @@ const ProjectDetail = () => {
       </div>
 
       {/* Main Split View */}
-      <div className="flex-1 flex overflow-hidden bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+      <div className="flex-1 flex overflow-hidden bg-[#FAFAFA] dark:bg-[#1F2937]">
         {/* Left Panel - Deliverables */}
-        <div className="w-[380px] border-r border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111111] overflow-y-auto p-5 flex flex-col gap-4">
+        <div className="w-[380px] border-r border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#202225] overflow-y-auto p-5 flex flex-col gap-4">
           {isClient && (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm dark:border-slate-800 dark:bg-[#0f131a]">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm dark:border-white/[0.08] dark:bg-[#2D3748]">
               <p className="font-semibold text-slate-900 dark:text-white">Client review</p>
               <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                 Select a deliverable, add comments, pin feedback on images, then approve or request changes when the project is delivered.
@@ -209,7 +209,7 @@ const ProjectDetail = () => {
           {/* File viewer */}
           <div className="flex-1 min-h-0 p-6 sm:p-10 overflow-hidden flex items-center justify-center relative">
             {activeDeliverable ? (
-              <div className="relative flex h-full w-full items-center justify-center bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+              <div className="relative flex h-full w-full items-center justify-center bg-white dark:bg-[#2D3748] shadow-sm border border-slate-200 dark:border-white/[0.08] rounded-lg overflow-hidden">
                 {activeDeliverable.type?.includes('image') ? (
                   <>
                     <img

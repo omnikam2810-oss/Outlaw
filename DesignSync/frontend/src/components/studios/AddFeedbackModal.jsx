@@ -35,7 +35,7 @@ export default function AddFeedbackModal({ isOpen, onClose, deliverable, onAdded
           Reviewing: <span className="font-semibold text-slate-700 dark:text-slate-200">{deliverable?.title || 'Selected deliverable'}</span>
         </p>
         <textarea
-          className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+          className="input-field resize-none"
           rows={4}
           placeholder="Share what should change, what is approved, or any context the design team needs..."
           value={comment}

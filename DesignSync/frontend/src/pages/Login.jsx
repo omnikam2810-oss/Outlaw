@@ -42,8 +42,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-start justify-center bg-[#f5f7fb] p-4 py-6 dark:bg-[#070b13] sm:p-8 lg:items-center">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl shadow-slate-900/12 dark:border-white/10 dark:bg-[#0f1724] dark:shadow-black/30 lg:grid-cols-[1.05fr_0.95fr]">
+    <div className="flex min-h-screen items-start justify-center bg-[#f5f7fb] p-4 py-6 dark:bg-[#1F2937] sm:p-8 lg:items-center">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl shadow-slate-900/12 dark:border-white/[0.08] dark:bg-[#2D3748] dark:shadow-black/20 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="flex flex-col gap-8 border-b border-slate-800 bg-slate-950 p-6 text-white sm:p-8 lg:min-h-[560px] lg:justify-between lg:border-b-0 lg:border-r lg:border-slate-200 lg:p-10 dark:lg:border-white/10">
           <div>
             <div className="flex items-center gap-3">
@@ -75,8 +75,8 @@ const Login = () => {
 
         <div className="p-6 sm:p-10">
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-300">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+            <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-[#9CA3AF]">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 dark:text-blue-400" />
               Single secure login
             </div>
             <h1 className="mt-5 text-2xl font-semibold text-slate-950 dark:text-white">Welcome back</h1>
@@ -110,7 +110,7 @@ const Login = () => {
             </Button>
           </form>
           
-          <div className="mt-6 border-t border-slate-200 pt-5 text-sm dark:border-slate-800">
+          <div className="mt-6 border-t border-slate-200 pt-5 text-sm dark:border-white/[0.08]">
             <p className="text-slate-500">
               New to DesignSync? <Link to="/register" className="font-medium text-slate-950 hover:underline dark:text-white">Create an account</Link>
             </p>

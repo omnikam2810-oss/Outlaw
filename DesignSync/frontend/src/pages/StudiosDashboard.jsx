@@ -70,7 +70,7 @@ const ProjectList = () => {
         description={isClient ? 'Open a project to inspect deliverables, pin comments, and approve or request changes.' : 'A focused board for briefs, client reviews, and delivery status.'}
         actions={(
           <>
-            <div className="hidden sm:block rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-[#0f131a]">
+            <div className="hidden sm:block rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-white/[0.08] dark:bg-white/[0.05]">
               <span className="font-semibold text-slate-950 dark:text-white">{projects.length}</span>
               <span className="ml-1 text-slate-500">{isClient ? 'to review' : 'projects'}</span>
             </div>
@@ -85,7 +85,7 @@ const ProjectList = () => {
       
       {projects.length === 0 ? (
         <div className="layout-card py-20 text-center flex flex-col items-center justify-center border-dashed">
-          <div className="w-16 h-16 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-slate-50 dark:bg-[#202833] rounded-full flex items-center justify-center mb-4">
              <Folder className="h-8 w-8 text-slate-300 dark:text-slate-600" />
           </div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">No active projects</h2>
@@ -113,7 +113,7 @@ const ProjectList = () => {
                 </Badge>
               </div>
 
-              <div className="mt-5 rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#0f131a]">
+              <div className="mt-5 rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-white/[0.08] dark:bg-white/[0.04]">
                 <div className="flex items-center justify-between gap-3 text-xs">
                   <span className="text-slate-500">Client</span>
                   <span className="font-medium text-slate-800 dark:text-slate-200">{project.clientId?.name || 'Unassigned'}</span>

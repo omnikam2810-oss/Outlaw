@@ -5,11 +5,11 @@ import { Avatar } from '../ui/Avatar';
 
 export default function DeliverableList({ deliverables, activeDeliverableId, onSelect, feedbackCounts = {} }) {
   const getIcon = (type) => {
-    if (!type) return <File className="h-6 w-6 text-indigo-500" />;
-    if (type.includes('image')) return <ImageIcon className="h-6 w-6 text-indigo-500" />;
+    if (!type) return <File className="h-6 w-6 text-teal-600" />;
+    if (type.includes('image')) return <ImageIcon className="h-6 w-6 text-teal-600" />;
     if (type.includes('pdf')) return <FileText className="h-6 w-6 text-red-500" />;
     if (type.includes('zip')) return <Archive className="h-6 w-6 text-amber-500" />;
-    return <File className="h-6 w-6 text-indigo-500" />;
+    return <File className="h-6 w-6 text-teal-600" />;
   };
 
   const getTimeAgo = (dateString) => {
@@ -26,7 +26,7 @@ export default function DeliverableList({ deliverables, activeDeliverableId, onS
 
   if (!deliverables || deliverables.length === 0) {
     return (
-      <div className="text-center p-8 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-300 dark:border-slate-700">
+      <div className="text-center p-8 bg-slate-50 dark:bg-white/[0.04] rounded-lg border border-dashed border-slate-300 dark:border-white/[0.08]">
         <File className="mx-auto h-12 w-12 text-slate-400 mb-3" />
         <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">No deliverables yet</h3>
         <p className="mt-1 text-sm text-slate-500">Upload the first file to get started.</p>
@@ -45,17 +45,17 @@ export default function DeliverableList({ deliverables, activeDeliverableId, onS
             className={`flex flex-col sm:flex-row gap-4 p-3 rounded-lg border transition-all cursor-pointer ${
               isActive 
                 ? 'bg-white border-slate-900 shadow-[0_1px_3px_rgba(0,0,0,0.05)] ring-1 ring-slate-900 dark:border-slate-300 dark:ring-slate-300' 
-                : 'bg-white border-slate-200/60 dark:bg-[#111111] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                : 'bg-white border-slate-200/60 dark:bg-[#2D3748] dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.16]'
             }`}
           >
             <div className="flex-1 flex gap-3 overflow-hidden items-center">
-              <div className="shrink-0 p-2 bg-slate-50 dark:bg-slate-800 rounded-md border border-slate-100 dark:border-slate-700">
+              <div className="shrink-0 p-2 bg-slate-50 dark:bg-[#202833] rounded-md border border-slate-100 dark:border-white/[0.08]">
                 {getIcon(item.type)}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-0.5">
                   <h4 className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 truncate tracking-tight">{item.title}</h4>
-                  <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-1 rounded uppercase">v{item.version}</span>
+                  <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-[#202833] px-1 rounded uppercase">v{item.version}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500">

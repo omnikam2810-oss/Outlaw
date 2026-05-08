@@ -3,20 +3,20 @@ import { cn } from '../../utils/cn';
 
 const Badge = ({ children, variant = 'default', className }) => {
   const dotClasses = {
-    default: 'bg-slate-400',
-    primary: 'bg-sky-500',
+    default: 'bg-slate-500',
+    primary: 'bg-blue-500',
     success: 'bg-emerald-500',
-    warning: 'bg-amber-500',
+    warning: 'bg-amber-600',
     danger: 'bg-rose-500',
   };
 
   const variantClasses = {
-    default: 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200',
-    primary: 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/20 dark:bg-sky-500/10 dark:text-sky-300',
+    default: 'border-slate-200 bg-slate-50 text-slate-700 dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-[#F9FAFB]',
+    primary: 'border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-300',
     success: 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-300',
     warning: 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-300',
     danger: 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-400/20 dark:bg-rose-500/10 dark:text-rose-300',
-    secondary: 'border-slate-200 bg-white text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300',
+    secondary: 'border-slate-200 bg-slate-50 text-slate-600 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-[#9CA3AF]',
   };
 
   return (

@@ -5,7 +5,7 @@ const Avatar = ({ src, fallback, size = '10', className }) => {
   const sizeClasses = `w-${size} h-${size}`;
   
   return (
-    <div className={cn('relative inline-flex flex-shrink-0 items-center justify-center rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700', sizeClasses, className)}>
+    <div className={cn('relative inline-flex flex-shrink-0 items-center justify-center rounded-full overflow-hidden bg-slate-200 dark:bg-white/[0.08]', sizeClasses, className)}>
       {src ? (
         <img src={src} alt="Avatar" className="w-full h-full object-cover" />
       ) : (

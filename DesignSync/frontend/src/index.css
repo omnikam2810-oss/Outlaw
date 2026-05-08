@@ -17,7 +17,7 @@
   }
 
   body {
-    @apply antialiased text-slate-800 bg-[#f5f7fb] dark:bg-[#070b13] dark:text-slate-200 font-sans;
+    @apply antialiased text-slate-800 bg-[#f3f6fa] dark:bg-[#1F2937] dark:text-[#F9FAFB] font-sans;
     transition: background-color 0.2s ease, color 0.2s ease;
     letter-spacing: 0;
   }
@@ -29,23 +29,23 @@
     pointer-events: none;
     z-index: -1;
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,247,251,0.92)),
-      radial-gradient(circle at 18% 0%, rgba(14, 165, 164, 0.13), transparent 26rem),
-      radial-gradient(circle at 86% 4%, rgba(37, 99, 235, 0.09), transparent 28rem),
-      repeating-linear-gradient(90deg, rgba(15, 23, 42, 0.028) 0 1px, transparent 1px 96px);
+      linear-gradient(180deg, rgba(248,250,252,0.96), rgba(241,245,249,0.94)),
+      radial-gradient(circle at 12% 0%, rgba(13, 148, 136, 0.10), transparent 24rem),
+      radial-gradient(circle at 86% 0%, rgba(79, 70, 229, 0.075), transparent 28rem),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.025) 0 1px, transparent 1px 96px);
   }
 
   .dark body::before {
     background:
-      linear-gradient(180deg, rgba(7,11,19,0.96), rgba(10,16,27,0.96)),
-      radial-gradient(circle at 16% 0%, rgba(20, 184, 166, 0.14), transparent 28rem),
-      radial-gradient(circle at 82% 0%, rgba(37, 99, 235, 0.16), transparent 30rem),
-      repeating-linear-gradient(90deg, rgba(148, 163, 184, 0.035) 0 1px, transparent 1px 96px);
+      linear-gradient(180deg, rgba(31,41,55,0.98), rgba(32,34,37,0.98)),
+      radial-gradient(circle at 16% 0%, rgba(59, 130, 246, 0.10), transparent 26rem),
+      radial-gradient(circle at 82% 0%, rgba(148, 163, 184, 0.07), transparent 28rem),
+      repeating-linear-gradient(90deg, rgba(249, 250, 251, 0.018) 0 1px, transparent 1px 96px);
   }
 
   /* Better focus rings */
   *:focus-visible {
-    @apply outline-none ring-2 ring-teal-500/60 ring-offset-2 ring-offset-white dark:ring-teal-300/60 dark:ring-offset-slate-950;
+    @apply outline-none ring-2 ring-teal-500/60 ring-offset-2 ring-offset-white dark:ring-blue-500/70 dark:ring-offset-[#1F2937];
   }
 
   h1, h2, h3 {
@@ -55,8 +55,8 @@
 
 @layer components {
   .layout-card {
-    @apply relative overflow-hidden rounded-lg border border-slate-200/80 bg-white/95 p-5 dark:border-white/10 dark:bg-[#0f1724]/95;
-    box-shadow: 0 1px 2px rgba(15,23,42,0.05), 0 18px 42px rgba(15,23,42,0.06);
+    @apply relative overflow-hidden rounded-lg border border-slate-200 bg-white p-5 dark:border-white/[0.08] dark:bg-[#2D3748];
+    box-shadow: 0 1px 2px rgba(15,23,42,0.045), 0 16px 34px rgba(15,23,42,0.055);
     backdrop-filter: blur(20px);
     transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
   }
@@ -66,47 +66,59 @@
   }
 
   .layout-card:hover {
-    @apply border-slate-300/80 dark:border-slate-700/80;
-    box-shadow: 0 4px 10px rgba(15,23,42,0.07), 0 24px 52px rgba(15,23,42,0.09);
+    @apply border-slate-300 dark:border-white/[0.14];
+    box-shadow: 0 3px 8px rgba(15,23,42,0.06), 0 20px 44px rgba(0,0,0,0.20);
   }
 
   .input-field {
-    @apply w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-950 shadow-sm placeholder:text-slate-400 outline-none dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-100 dark:placeholder:text-slate-500;
+    @apply w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-950 shadow-sm placeholder:text-slate-400 outline-none dark:border-white/[0.08] dark:bg-[#202833] dark:text-[#F9FAFB] dark:placeholder:text-[#9CA3AF];
     transition: box-shadow 0.15s, border-color 0.15s, background-color 0.15s;
   }
 
   .input-field:hover {
-    @apply border-slate-300 dark:border-slate-600;
+    @apply border-slate-300 dark:border-white/[0.16];
   }
 
   .input-field:focus {
-    @apply border-teal-500 ring-4 ring-teal-500/10 dark:border-teal-400 dark:ring-teal-300/10;
+    @apply border-teal-600 ring-4 ring-teal-600/10 dark:border-blue-500 dark:ring-blue-500/15;
   }
 
   .page-panel {
-    @apply rounded-lg border border-slate-200/80 bg-white/95 p-5 shadow-sm dark:border-white/10 dark:bg-[#0f1724]/95;
+    @apply relative overflow-hidden rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-white/[0.08] dark:bg-[#2D3748];
+    box-shadow: 0 1px 2px rgba(15,23,42,0.045), 0 14px 30px rgba(0,0,0,0.16);
+  }
+
+  .page-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0f766e, #334155 48%, #4f46e5);
+    opacity: 0.82;
   }
 
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold uppercase text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300;
+    @apply inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold uppercase text-slate-600 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-[#9CA3AF];
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
   }
 
   .table-shell {
-    @apply overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm dark:border-white/10 dark:bg-[#0f1724];
+    @apply overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#2D3748];
+    box-shadow: 0 1px 2px rgba(15,23,42,0.045), 0 14px 30px rgba(0,0,0,0.16);
   }
 
   .form-label {
-    @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300;
+    @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-[#F9FAFB];
   }
 
   .btn-primary {
-    @apply px-4 py-2 bg-slate-950 hover:bg-slate-800 active:bg-black text-white rounded-lg font-medium shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200;
+    @apply px-4 py-2 bg-slate-950 hover:bg-slate-800 active:bg-black text-white rounded-lg font-medium shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500;
     transition: background-color 0.15s, transform 0.1s;
   }
   .btn-primary:active { transform: scale(0.98); }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-white dark:bg-[#11151c] hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg font-medium shadow-sm disabled:opacity-50 flex items-center justify-center gap-2;
+    @apply px-4 py-2 bg-white dark:bg-[#2D3748] hover:bg-slate-50 dark:hover:bg-[#374151] text-slate-700 dark:text-[#F9FAFB] border border-slate-200 dark:border-white/[0.08] rounded-lg font-medium shadow-sm disabled:opacity-50 flex items-center justify-center gap-2;
     transition: background-color 0.15s, transform 0.1s;
   }
   .btn-secondary:active { transform: scale(0.98); }

@@ -19,7 +19,7 @@ export default function ProjectStatusStepper({ status, onAdvance, canAdvance }) 
         {canAdvance && nextStage && (
           <button
             onClick={() => onAdvance(nextStage.key)}
-            className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full transition-colors"
+            className="text-xs font-medium text-teal-700 dark:text-blue-400 hover:underline bg-teal-50 dark:bg-blue-500/10 px-3 py-1 rounded-full transition-colors"
           >
             Advance → {nextStage.label}
           </button>
@@ -39,10 +39,10 @@ export default function ProjectStatusStepper({ status, onAdvance, canAdvance }) 
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                     isCompleted
-                      ? 'bg-indigo-600 text-white'
+                      ? 'bg-teal-700 text-white'
                       : isActive
-                      ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                      ? 'bg-teal-50 dark:bg-blue-500/10 text-teal-700 dark:text-blue-400 ring-2 ring-teal-600 dark:ring-blue-500 ring-offset-2 dark:ring-offset-[#1F2937]'
+                      : 'bg-slate-100 dark:bg-[#202833] text-slate-400'
                   }`}
                 >
                   {isCompleted ? (
@@ -53,14 +53,14 @@ export default function ProjectStatusStepper({ status, onAdvance, canAdvance }) 
                 </div>
                 <span
                   className={`text-xs font-medium whitespace-nowrap ${
-                    isActive ? 'text-indigo-600 dark:text-indigo-400' : isUpcoming ? 'text-slate-400' : 'text-slate-600 dark:text-slate-400'
+                    isActive ? 'text-teal-700 dark:text-blue-400' : isUpcoming ? 'text-slate-400' : 'text-slate-600 dark:text-[#9CA3AF]'
                   }`}
                 >
                   {stage.label}
                 </span>
               </div>
               {i < STAGES.length - 1 && (
-                <div className={`h-0.5 flex-1 -mt-5 transition-all ${i < currentIndex ? 'bg-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`} />
+                <div className={`h-0.5 flex-1 -mt-5 transition-all ${i < currentIndex ? 'bg-teal-700 dark:bg-blue-500' : 'bg-slate-200 dark:bg-white/[0.08]'}`} />
               )}
             </React.Fragment>
           );

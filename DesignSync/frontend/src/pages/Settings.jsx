@@ -94,8 +94,8 @@ const Settings = () => {
   const themeButtonClass = (value) =>
     `flex flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
       theme === value
-        ? 'border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950'
-        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0f131a] dark:text-slate-200 dark:hover:bg-slate-800'
+        ? 'border-slate-950 bg-slate-950 text-white dark:border-blue-500 dark:bg-blue-600 dark:text-white'
+        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#2D3748] dark:text-[#F9FAFB] dark:hover:bg-[#374151]'
     }`;
 
   return (
@@ -116,7 +116,7 @@ const Settings = () => {
           <div className="flex flex-wrap items-center gap-4">
             <Avatar src={user?.avatar} fallback={formData.name || user?.email || 'User'} size="16" className="h-16 w-16" />
             <div className="flex flex-wrap gap-2">
-              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#2D3748] dark:text-[#F9FAFB] dark:hover:bg-[#374151]">
                 <Camera className="h-4 w-4" />
                 {photoSaving ? 'Uploading...' : 'Change photo'}
                 <input
@@ -155,7 +155,7 @@ const Settings = () => {
               type="email"
               value={formData.email}
               readOnly
-              className="input-field cursor-not-allowed bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-400 placeholder:text-slate-400"
+              className="input-field cursor-not-allowed bg-slate-100 text-slate-500 dark:bg-[#202833] dark:text-[#9CA3AF] placeholder:text-slate-400"
               required
             />
             <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">Email address is managed by your administrator and cannot be changed here.</p>

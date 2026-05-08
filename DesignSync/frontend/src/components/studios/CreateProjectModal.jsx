@@ -102,14 +102,14 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
         {isAdmin && (
           <div>
             <label className="form-label">Assign Designer</label>
-            <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-white/5">
+            <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-white/[0.08] dark:bg-white/[0.05]">
               {designers.length === 0 ? (
                 <p className="px-1 py-2 text-sm text-slate-500">No designer accounts found.</p>
               ) : designers.map((designer) => (
                 <label key={designer._id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-white dark:hover:bg-white/10">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-400"
+                    className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500/30"
                     checked={formData.designerIds.includes(designer._id)}
                     onChange={() => toggleDesigner(designer._id)}
                   />

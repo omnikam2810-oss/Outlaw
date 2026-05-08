@@ -67,10 +67,10 @@ const AdminDashboard = () => {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Projects', value: metrics.totalProjects, icon: Folder, color: 'text-slate-700 bg-slate-100 dark:text-slate-200 dark:bg-slate-800' },
-          { label: 'Active Clients', value: metrics.activeClients, icon: Users, color: 'text-teal-700 bg-teal-50 dark:text-teal-300 dark:bg-teal-900/30' },
-          { label: 'Total Users', value: metrics.totalUsers, icon: BookOpen, color: 'text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-900/30' },
-          { label: 'Active Projects', value: metrics.activeProjects, icon: Clock, color: 'text-amber-700 bg-amber-50 dark:text-amber-300 dark:bg-amber-900/30' },
+          { label: 'Total Projects', value: metrics.totalProjects, icon: Folder, color: 'text-slate-700 bg-slate-100 dark:text-[#F9FAFB] dark:bg-white/[0.06]' },
+          { label: 'Active Clients', value: metrics.activeClients, icon: Users, color: 'text-teal-700 bg-teal-50 dark:text-blue-300 dark:bg-blue-500/10' },
+          { label: 'Total Users', value: metrics.totalUsers, icon: BookOpen, color: 'text-indigo-700 bg-indigo-50 dark:text-blue-300 dark:bg-blue-500/10' },
+          { label: 'Active Projects', value: metrics.activeProjects, icon: Clock, color: 'text-slate-700 bg-slate-100 dark:text-amber-300 dark:bg-amber-500/10' },
         ].map((stat, i) => (
           <div key={i} className="layout-card p-5">
             <div className="flex items-start justify-between">
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
             <p className="py-12 text-center text-sm text-slate-400">No recent activity yet.</p>
           ) : activity.map((item, i) => (
             <div key={i} className="flex items-center gap-3 py-3">
-              <div className="h-8 w-8 shrink-0 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+              <div className="h-8 w-8 shrink-0 rounded-lg bg-slate-100 dark:bg-white/[0.06] flex items-center justify-center">
                 <span className="h-2 w-2 rounded-full bg-teal-500" />
               </div>
               <p className="text-sm text-slate-700 dark:text-slate-300">{item.message}</p>

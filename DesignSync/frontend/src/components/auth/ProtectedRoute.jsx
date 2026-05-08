@@ -8,7 +8,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
 
   if (loading) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-[#1F2937]">
         <div className="skeleton w-32 h-32 rounded-full"></div>
       </div>
     );

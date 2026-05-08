@@ -154,7 +154,7 @@ export default function UserManagement() {
 
       <form onSubmit={createUser} className="layout-card p-5">
         <div className="mb-4 flex items-center gap-2">
-          <UserPlus className="h-5 w-5 text-indigo-500" />
+          <UserPlus className="h-5 w-5 text-teal-700" />
           <div>
           <h2 className="font-semibold text-slate-900 dark:text-white">Create login ID</h2>
             <p className="text-xs text-slate-500">Share this email and password with the designer or client after creating the account.</p>
@@ -235,10 +235,10 @@ export default function UserManagement() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/80 dark:border-white/10 dark:bg-white/5">
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">User</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Role</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Joined</th>
+              <tr className="border-b border-slate-200 bg-[#f1f5f9] dark:border-white/10 dark:bg-white/5">
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">User</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">Role</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">Joined</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
@@ -262,7 +262,7 @@ export default function UserManagement() {
                   <tr
                     key={u._id}
                     onClick={() => openUserDetails(u)}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                    className="hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-colors cursor-pointer"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.target !== e.currentTarget) return;
@@ -288,7 +288,7 @@ export default function UserManagement() {
                             value={editRole}
                             onChange={(e) => setEditRole(e.target.value)}
                             onClick={(e) => e.stopPropagation()}
-                            className="text-xs bg-white dark:bg-slate-800 border border-indigo-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                            className="text-xs bg-white dark:bg-[#202833] border border-teal-300 dark:border-blue-500/50 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                             disabled={u.role === 'admin'}
                           >
                             {(u.role === 'admin' ? ['admin'] : ROLES.filter((r) => r !== 'admin')).map((r) => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
@@ -313,7 +313,7 @@ export default function UserManagement() {
                       <div className="flex items-center gap-2 justify-end">
                         <button
                           onClick={(e) => { e.stopPropagation(); openUserDetails(u); }}
-                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-white"
                           aria-label={`View details for ${u.name || u.email}`}
                           title="View user details"
                         >
@@ -322,7 +322,7 @@ export default function UserManagement() {
                         </button>
                         <label
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-white"
                           title="Change profile photo"
                           aria-label={`Change profile photo for ${u.name || u.email}`}
                         >
@@ -343,7 +343,7 @@ export default function UserManagement() {
                         <button
                           onClick={(e) => { e.stopPropagation(); setEditingId(u._id); setEditRole(u.role); }}
                           disabled={editingId === u._id || u.role === 'admin'}
-                          className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors disabled:opacity-30"
+                          className="p-1.5 text-slate-500 hover:text-teal-700 hover:bg-teal-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors disabled:opacity-30"
                           aria-label="Edit role"
                         >
                           <Edit2 className="w-4 h-4" />

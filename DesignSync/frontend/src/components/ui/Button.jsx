@@ -2,13 +2,13 @@ import React from 'react';
 import { cn } from '../../utils/cn';
 
 const Button = React.forwardRef(({ className, variant = 'primary', size = 'md', isLoading, asChild = false, children, ...props }, ref) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold tracking-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-teal-300/50 dark:focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
+  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold tracking-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-blue-500/70 dark:focus-visible:ring-offset-[#1F2937] disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
   
   const variants = {
-    primary: 'bg-slate-950 text-white shadow-sm shadow-slate-900/10 hover:bg-slate-800 hover:shadow-md dark:bg-teal-300 dark:text-slate-950 dark:hover:bg-teal-200',
-    secondary: 'border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10',
+    primary: 'bg-[#0f172a] text-white shadow-sm shadow-slate-900/10 hover:bg-[#111f37] hover:shadow-md dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500 dark:shadow-black/20',
+    secondary: 'border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-[#f8fafc] hover:text-slate-950 dark:border-white/[0.08] dark:bg-[#2D3748] dark:text-[#F9FAFB] dark:hover:bg-[#374151]',
     danger: 'border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 hover:text-rose-800 dark:border-rose-400/20 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/15',
-    ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-50',
+    ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-[#F9FAFB]',
   };
 
   const sizes = {

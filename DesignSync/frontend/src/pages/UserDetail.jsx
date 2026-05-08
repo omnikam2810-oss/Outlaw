@@ -147,7 +147,7 @@ export default function UserDetail() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#2D3748] dark:text-[#F9FAFB] dark:hover:bg-[#374151]">
               <Camera className="h-4 w-4" />
               {photoSaving ? 'Uploading...' : 'Change photo'}
               <input

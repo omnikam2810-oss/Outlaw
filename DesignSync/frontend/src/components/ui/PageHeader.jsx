@@ -7,11 +7,11 @@ const PageHeader = ({ eyebrow, icon: Icon, title, description, actions, meta, cl
       <div className="min-w-0">
         {eyebrow && (
           <div className="eyebrow">
-            {Icon && <Icon className="h-3.5 w-3.5 text-teal-600 dark:text-teal-300" />}
+            {Icon && <Icon className="h-3.5 w-3.5 text-teal-600 dark:text-blue-400" />}
             {eyebrow}
           </div>
         )}
-        <h1 className="mt-4 text-2xl font-semibold text-slate-950 dark:text-white">{title}</h1>
+        <h1 className="mt-4 text-2xl font-semibold text-[#111827] dark:text-white">{title}</h1>
         {description && <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">{description}</p>}
       </div>
       {(actions || meta) && (

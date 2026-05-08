@@ -33,30 +33,30 @@ export default function CreateAssignmentModal({ isOpen, onClose, onCreated }) {
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Assignment">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Assignment Title</label>
+          <label className="form-label">Assignment Title</label>
           <input 
             type="text" 
             required 
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field"
             value={formData.title}
             onChange={e => setFormData({ ...formData, title: e.target.value })}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Description & Requirements</label>
+          <label className="form-label">Description & Requirements</label>
           <textarea 
             required
             rows={4}
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field resize-none"
             value={formData.description}
             onChange={e => setFormData({ ...formData, description: e.target.value })}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Deadline (Optional)</label>
+          <label className="form-label">Deadline (Optional)</label>
           <input 
             type="date"
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="input-field"
             value={formData.deadline}
             onChange={e => setFormData({ ...formData, deadline: e.target.value })}
           />

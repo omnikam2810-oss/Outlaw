@@ -58,7 +58,7 @@ function ReplyThread({ thread, pinNumber, onResolved }) {
   const isResolved = thread.status === 'resolved';
 
   return (
-    <div id={`feedback-thread-${thread._id}`} className={`rounded-xl border p-3 space-y-2 transition-all ${isResolved ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 opacity-70' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'}`}>
+    <div id={`feedback-thread-${thread._id}`} className={`rounded-xl border p-3 space-y-2 transition-all ${isResolved ? 'border-emerald-200 dark:border-emerald-400/20 bg-emerald-50 dark:bg-emerald-500/10 opacity-70' : 'border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#2D3748]'}`}>
       {/* Thread header */}
       <div className="flex items-start gap-2 relative">
         {thread.position && !isResolved && (
@@ -96,7 +96,7 @@ function ReplyThread({ thread, pinNumber, onResolved }) {
         <div className="ml-9 flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium"
+            className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 dark:text-blue-400 font-medium"
           >
             <Reply className="w-3 h-3" /> Reply
           </button>
@@ -122,7 +122,7 @@ function ReplyThread({ thread, pinNumber, onResolved }) {
         <div className="ml-9 flex items-center gap-2 mt-1">
           <input
             autoFocus
-            className="flex-1 text-xs bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="flex-1 text-xs bg-slate-100 dark:bg-[#202833] border border-slate-200 dark:border-white/[0.08] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
             placeholder="Write a reply..."
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
@@ -131,7 +131,7 @@ function ReplyThread({ thread, pinNumber, onResolved }) {
           <button
             onClick={submitReply}
             disabled={submitting || !replyText.trim()}
-            className="p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="p-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50 transition-colors"
           >
             {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
           </button>
@@ -192,11 +192,11 @@ export default function FeedbackPanel({ deliverable, threads = [], setThreads, o
   const openCount = threads.filter((t) => t.status !== 'resolved').length;
 
   return (
-    <div className="h-72 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-col">
+    <div className="h-72 border-t border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#202225] flex flex-col">
       {/* Header */}
-      <div className="px-4 py-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-between shrink-0">
+      <div className="px-4 py-2.5 border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-[#2D3748] flex items-center justify-between shrink-0">
         <h3 className="font-semibold text-sm flex items-center gap-2 text-slate-800 dark:text-slate-200">
-          <MessageSquare className="w-4 h-4 text-indigo-500" />
+          <MessageSquare className="w-4 h-4 text-blue-500" />
           Feedback
           {openCount > 0 && (
             <Badge variant="warning" className="text-xs px-1.5 py-0.5">{openCount} open</Badge>

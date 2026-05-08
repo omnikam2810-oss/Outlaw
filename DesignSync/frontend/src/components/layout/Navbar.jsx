@@ -17,8 +17,8 @@ function timeAgo(date) {
 
 const ICON_MAP = {
   success: <CheckCircle className="w-4 h-4 text-emerald-500" />,
-  message: <MessageSquare className="w-4 h-4 text-indigo-500" />,
-  info: <Info className="w-4 h-4 text-sky-500" />,
+  message: <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-blue-400" />,
+  info: <Info className="w-4 h-4 text-teal-600 dark:text-blue-400" />,
 };
 
 const Navbar = ({ onMenuClick }) => {
@@ -93,12 +93,12 @@ const Navbar = ({ onMenuClick }) => {
   const topFive = notifications.slice(0, 5);
 
   return (
-    <nav className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/80 px-4 shadow-sm shadow-slate-900/5 backdrop-blur-2xl dark:border-white/10 dark:bg-[#07101d]/90 sm:px-6">
+    <nav className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 px-4 shadow-sm shadow-slate-900/5 backdrop-blur-2xl dark:border-white/[0.08] dark:bg-[#202225]/90 sm:px-6">
       <div className="flex items-center gap-4">
         <button
           onClick={onMenuClick}
           aria-label="Open menu"
-          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 md:hidden"
+          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-[#F9FAFB] md:hidden"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -109,7 +109,7 @@ const Navbar = ({ onMenuClick }) => {
         <button
           onClick={toggleTheme}
           aria-label="Toggle dark mode"
-          className="rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:shadow-sm dark:text-slate-300 dark:hover:bg-white/10"
+          className="rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-950 hover:shadow-sm dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-[#F9FAFB]"
         >
           {theme === 'dark' ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
         </button>
@@ -119,23 +119,23 @@ const Navbar = ({ onMenuClick }) => {
           <button
             onClick={() => setBellOpen((o) => !o)}
             aria-label="Notifications"
-            className="relative rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:shadow-sm dark:text-slate-300 dark:hover:bg-white/10"
+            className="relative rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-950 hover:shadow-sm dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-[#F9FAFB]"
           >
             <Bell className="h-5 w-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-red-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-white text-[9px] font-bold">
+              <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-blue-600 border-2 border-white dark:border-[#202225] flex items-center justify-center text-white text-[9px] font-bold">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
           </button>
 
           {bellOpen && (
-            <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-lg border border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/20 backdrop-blur-2xl dark:border-white/10 dark:bg-[#0f1724]/95">
-              <div className="px-4 py-3 border-b border-slate-200/70 dark:border-white/10 flex items-center justify-between gap-3 bg-slate-50/60 dark:bg-white/5">
+            <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-lg border border-slate-200 bg-white/95 shadow-2xl shadow-slate-900/18 backdrop-blur-2xl dark:border-white/[0.08] dark:bg-[#2D3748]/95">
+              <div className="px-4 py-3 border-b border-slate-200 dark:border-white/[0.08] flex items-center justify-between gap-3 bg-slate-50 dark:bg-white/[0.04]">
                 <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">Notifications</p>
                 <div className="flex items-center gap-3">
                   {unreadCount > 0 && (
-                    <button onClick={markAllRead} className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+                    <button onClick={markAllRead} className="text-xs text-teal-700 dark:text-blue-400 hover:underline font-medium">
                       Mark read
                     </button>
                   )}
@@ -159,24 +159,24 @@ const Navbar = ({ onMenuClick }) => {
                     <button
                       key={n._id}
                       onClick={() => { markOneRead(n._id); setBellOpen(false); navigate(n.link || '/notifications'); }}
-                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${!n.isRead ? 'bg-teal-50/60 dark:bg-teal-500/10' : ''}`}
+                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors ${!n.isRead ? 'bg-teal-50/70 dark:bg-blue-500/10' : ''}`}
                     >
                       <span className="mt-0.5">{ICON_MAP[n.type] || ICON_MAP.info}</span>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs leading-relaxed ${!n.isRead ? 'font-semibold text-slate-800 dark:text-slate-200' : 'text-slate-600 dark:text-slate-400'}`}>
+                        <p className={`text-xs leading-relaxed ${!n.isRead ? 'font-semibold text-slate-800 dark:text-[#F9FAFB]' : 'text-slate-600 dark:text-[#9CA3AF]'}`}>
                           {n.message}
                         </p>
                         <p className="text-xs text-slate-400 mt-0.5">{timeAgo(n.createdAt)}</p>
                       </div>
-                      {!n.isRead && <span className="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 shrink-0" />}
+                      {!n.isRead && <span className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />}
                     </button>
                   ))
                 )}
               </div>
-              <div className="px-4 py-2.5 border-t border-slate-200/70 dark:border-white/10 bg-slate-50/60 dark:bg-white/5">
+              <div className="px-4 py-2.5 border-t border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04]">
                 <button
                   onClick={() => { setBellOpen(false); navigate('/notifications'); }}
-                  className="w-full text-center text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                  className="w-full text-center text-xs text-teal-700 dark:text-blue-400 hover:underline font-medium"
                 >
                   View all notifications
                 </button>
@@ -189,14 +189,14 @@ const Navbar = ({ onMenuClick }) => {
         <button
           type="button"
           onClick={() => navigate('/settings')}
-          className="ml-1 flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-left transition-all hover:bg-slate-100 dark:hover:bg-white/5"
+          className="ml-1 flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-left transition-all hover:bg-slate-100 dark:hover:bg-white/[0.06]"
           aria-label="Open profile"
           title="Open profile"
         >
           <Avatar src={user?.avatar} fallback={user?.name || 'User'} size="8" />
           <div className="hidden sm:block text-sm">
-            <p className="font-semibold text-slate-700 dark:text-slate-200 leading-tight">{user?.name || 'Loading...'}</p>
-            <p className="text-slate-500 text-xs hidden lg:block capitalize">{user?.role?.replace('_', ' ')}</p>
+            <p className="font-semibold text-slate-700 dark:text-[#F9FAFB] leading-tight">{user?.name || 'Loading...'}</p>
+            <p className="text-slate-500 dark:text-[#9CA3AF] text-xs hidden lg:block capitalize">{user?.role?.replace('_', ' ')}</p>
           </div>
         </button>
       </div>

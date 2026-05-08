@@ -68,7 +68,7 @@ export default function MentorReviewModal({ isOpen, onClose, submission, onRevie
               href={submission.fileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-white/[0.08] dark:text-[#F9FAFB] dark:hover:bg-white/[0.06]"
             >
               <ExternalLink className="h-4 w-4" />
               Open submitted work
@@ -77,13 +77,13 @@ export default function MentorReviewModal({ isOpen, onClose, submission, onRevie
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Rating</label>
+          <label className="form-label">Rating</label>
           <StarRating rating={rating} setRating={setRating} />
           {rating > 0 && <p className="text-xs text-slate-400 mt-1">{['', 'Needs major work', 'Below expectations', 'Meets expectations', 'Above expectations', 'Outstanding! ⭐'][rating]}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Decision</label>
+          <label className="form-label">Decision</label>
           <div className="flex gap-3">
             {['approved', 'revision_requested'].map((opt) => (
               <button
@@ -94,7 +94,7 @@ export default function MentorReviewModal({ isOpen, onClose, submission, onRevie
                     ? opt === 'approved'
                       ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
                       : 'border-amber-500 bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
-                    : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-400'
+                    : 'border-slate-200 dark:border-white/[0.08] text-slate-500 dark:text-[#9CA3AF] hover:border-slate-400 dark:hover:border-white/[0.16]'
                 }`}
               >
                 {opt === 'approved' ? 'Approve' : 'Request Revision'}
@@ -104,9 +104,9 @@ export default function MentorReviewModal({ isOpen, onClose, submission, onRevie
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Feedback Notes</label>
+          <label className="form-label">Feedback Notes</label>
           <textarea
-            className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+            className="input-field resize-none"
             rows={3}
             placeholder="Provide detailed feedback to help the student improve..."
             value={feedback}

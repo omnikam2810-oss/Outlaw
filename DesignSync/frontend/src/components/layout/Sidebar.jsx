@@ -45,17 +45,17 @@ const Sidebar = ({ isOpen, onClose }) => {
       />
       
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 w-64 overflow-hidden border-r border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-transform duration-300 dark:border-white/10 dark:bg-[#07101d]/95 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 overflow-hidden border-r border-slate-200 bg-[#f8fafc]/95 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-transform duration-300 dark:border-white/[0.08] dark:bg-[#202225]/95 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[linear-gradient(180deg,rgba(15,23,42,0.05),transparent)] dark:bg-[linear-gradient(180deg,rgba(20,184,166,0.08),transparent)]" />
-        <div className="relative h-20 flex items-center justify-between px-5 border-b border-slate-200/80 dark:border-white/10">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[linear-gradient(180deg,rgba(15,23,42,0.06),transparent)] dark:bg-[linear-gradient(180deg,rgba(59,130,246,0.10),transparent)]" />
+        <div className="relative h-20 flex items-center justify-between px-5 border-b border-slate-200 dark:border-white/[0.08]">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="h-10 w-10 rounded-lg bg-slate-950 text-white dark:bg-teal-300 dark:text-slate-950 flex items-center justify-center shadow-lg shadow-slate-900/10 ring-1 ring-white/40 dark:ring-white/20">
+            <div className="h-10 w-10 rounded-lg bg-[#0f172a] text-white dark:bg-blue-600 dark:text-white flex items-center justify-center shadow-lg shadow-slate-900/10 ring-1 ring-white/60 dark:ring-white/10">
               <Layers3 className="h-5 w-5" />
             </div>
             <div className="min-w-0">
               <h1 className="text-base font-bold text-slate-950 dark:text-white leading-tight">DesignSync</h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 capitalize truncate">Enterprise {roleLabel}</p>
+              <p className="text-xs text-slate-500 dark:text-[#9CA3AF] capitalize truncate">Enterprise {roleLabel}</p>
             </div>
           </div>
           <button onClick={onClose} className="md:hidden text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
@@ -63,9 +63,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
         
-        <div className="relative px-5 py-4 border-b border-slate-100/80 dark:border-white/10">
-          <p className="text-[11px] font-semibold uppercase text-teal-700 dark:text-teal-300">Workspace</p>
-          <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">Design operations, approvals, and academy work in one clean system.</p>
+        <div className="relative px-5 py-4 border-b border-slate-100/80 dark:border-white/[0.08]">
+          <p className="text-[11px] font-semibold uppercase text-teal-700 dark:text-blue-400">Workspace</p>
+          <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-[#9CA3AF]">Design operations, approvals, and academy work in one clean system.</p>
         </div>
 
         <nav className="relative p-3 space-y-1 overflow-y-auto h-[calc(100vh-13rem)]">
@@ -77,8 +77,8 @@ const Sidebar = ({ isOpen, onClose }) => {
               className={({ isActive }) => 
                 `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive 
-                    ? 'bg-slate-950 text-white shadow-lg shadow-slate-900/12 dark:bg-teal-300 dark:text-slate-950 dark:shadow-black/30' 
-                    : 'text-slate-600 hover:bg-slate-100 hover:shadow-sm dark:text-slate-400 dark:hover:bg-white/5 hover:text-slate-950 dark:hover:text-slate-200'
+                    ? 'bg-[#0f172a] text-white shadow-md shadow-slate-900/12 ring-1 ring-slate-900/5 dark:bg-blue-600 dark:text-white dark:shadow-black/25' 
+                    : 'text-slate-600 hover:bg-white hover:shadow-sm dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] hover:text-slate-950 dark:hover:text-[#F9FAFB]'
                 }`
               }
             >
@@ -88,10 +88,10 @@ const Sidebar = ({ isOpen, onClose }) => {
           ))}
         </nav>
         
-        <div className="absolute bottom-0 left-0 w-full p-4 border-t border-slate-200/70 dark:border-white/10 bg-white/50 dark:bg-[#0b111a]/60 backdrop-blur-xl">
+        <div className="absolute bottom-0 left-0 w-full p-4 border-t border-slate-200 dark:border-white/[0.08] bg-[#f8fafc]/80 dark:bg-[#2D3748]/80 backdrop-blur-xl">
           <button 
             onClick={logout}
-            className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-slate-200 font-medium transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-[#F9FAFB] font-medium transition-colors"
           >
             <LogOut className="h-5 w-5 text-red-500" />
             Sign Out

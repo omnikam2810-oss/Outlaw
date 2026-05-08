@@ -76,8 +76,8 @@ export default function UploadModal({ isOpen, onClose, projectId, onUploadSucces
         </p>
 
         {uploading && (
-          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 mt-4">
-            <div className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+          <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-2.5 mt-4">
+            <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
             <p className="text-right text-xs mt-1 text-slate-500 font-medium">{progress}%</p>
           </div>
         )}
