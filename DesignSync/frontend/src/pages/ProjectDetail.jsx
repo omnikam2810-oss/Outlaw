@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CheckCircle2, MessageSquareWarning, Trash2, Upload } from 'lucide-react';
+import { CheckCircle2, ListPlus, MessageSquareWarning, Plus, Trash2, Upload } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import DeliverableList from '../components/studios/DeliverableList';
@@ -26,6 +26,13 @@ const STATUS_COLORS = {
   delivered: 'success',
 };
 
+const FEATURE_STATUS_COLORS = {
+  open: 'secondary',
+  in_progress: 'warning',
+  submitted: 'primary',
+  approved: 'success',
+};
+
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,8 +40,12 @@ const ProjectDetail = () => {
   const { addToast } = useToast();
   const [project, setProject] = useState(null);
   const [deliverables, setDeliverables] = useState([]);
-  const [activeDeliverable, setActiveDeliverable] = useState(null);
+  const [activeDeliverableId, setActiveDeliverableId] = useState('');
+  const [activeFeatureId, setActiveFeatureId] = useState('');
   const [isUploadOpen, setUploadOpen] = useState(false);
+  const [featureFormOpen, setFeatureFormOpen] = useState(false);
+  const [featureForm, setFeatureForm] = useState({ title: '', description: '' });
+  const [featureSaving, setFeatureSaving] = useState(false);
   const [isFeedbackOpen, setFeedbackOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +62,7 @@ const ProjectDetail = () => {
         ]);
         setProject(projRes.data.data);
         setDeliverables(delRes.data.data);
-        if (delRes.data.data.length > 0) setActiveDeliverable(delRes.data.data[0]);
+        if (delRes.data.data.length > 0) setActiveDeliverableId(delRes.data.data[0]._id);
       } catch (err) {
         console.error(err);
         setError(err.response?.status === 403 ? 'unauthorized' : 'not_found');
@@ -64,7 +75,35 @@ const ProjectDetail = () => {
 
   const handleUploadSuccess = (newDeliverable) => {
     setDeliverables([newDeliverable, ...deliverables]);
-    setActiveDeliverable(newDeliverable);
+    setActiveDeliverableId(newDeliverable._id);
+    if (newDeliverable.featureId) {
+      setProject((prev) => ({
+        ...prev,
+        features: prev.features?.map((feature) => feature._id === newDeliverable.featureId ? { ...feature, status: 'submitted' } : feature) || []
+      }));
+    }
+  };
+
+  const addFeature = async (e) => {
+    e.preventDefault();
+    if (!featureForm.title.trim()) return;
+
+    try {
+      setFeatureSaving(true);
+      const { data } = await api.post(`/projects/${id}/features`, {
+        title: featureForm.title.trim(),
+        description: featureForm.description.trim()
+      });
+      setProject((prev) => ({ ...prev, features: [...(prev.features || []), data.data] }));
+      setActiveFeatureId(data.data._id);
+      setFeatureForm({ title: '', description: '' });
+      setFeatureFormOpen(false);
+      addToast('Feature added', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.message || err.response?.data?.error || 'Failed to add feature', 'error');
+    } finally {
+      setFeatureSaving(false);
+    }
   };
 
   const updateStatus = async (newStatus) => {
@@ -88,8 +127,15 @@ const ProjectDetail = () => {
   };
 
   const canUpload = user?.role === 'admin' || user?.role === 'designer';
+  const canAddFeature = user?.role === 'admin' || user?.role === 'designer' || user?.role === 'enterprise_client';
   const isClient = user?.role === 'enterprise_client';
   const status = project?.status || 'draft';
+  const features = project?.features || [];
+  const activeFeature = features.find((feature) => feature._id === activeFeatureId);
+  const visibleDeliverables = activeFeatureId
+    ? deliverables.filter((deliverable) => deliverable.featureId === activeFeatureId)
+    : deliverables;
+  const activeDeliverable = visibleDeliverables.find((deliverable) => deliverable._id === activeDeliverableId) || visibleDeliverables[0] || null;
   const canDeleteCompletedProject = user?.role === 'admin' && ['delivered', 'approved'].includes(status);
   const deadline = project?.deadline
     ? new Date(project.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -176,9 +222,94 @@ const ProjectDetail = () => {
               </p>
             </div>
           )}
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-white/[0.08] dark:bg-[#2D3748]">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                <ListPlus className="h-4 w-4 text-teal-700 dark:text-blue-400" />
+                Features
+              </h2>
+              {canAddFeature && (
+                <button
+                  type="button"
+                  onClick={() => setFeatureFormOpen((open) => !open)}
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 hover:bg-white hover:text-slate-950 dark:hover:bg-white/10 dark:hover:text-white"
+                  aria-label="Add feature"
+                  title="Add feature"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {featureFormOpen && (
+              <form onSubmit={addFeature} className="mt-3 space-y-2">
+                <input
+                  type="text"
+                  className="input-field h-9 text-sm"
+                  placeholder="Feature name"
+                  value={featureForm.title}
+                  onChange={(e) => setFeatureForm((prev) => ({ ...prev, title: e.target.value }))}
+                />
+                <textarea
+                  rows={2}
+                  className="input-field resize-none text-sm"
+                  placeholder="Feature details"
+                  value={featureForm.description}
+                  onChange={(e) => setFeatureForm((prev) => ({ ...prev, description: e.target.value }))}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button type="button" size="sm" variant="secondary" onClick={() => setFeatureFormOpen(false)} disabled={featureSaving}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" size="sm" isLoading={featureSaving}>
+                    Add
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            <div className="mt-3 space-y-2">
+              <button
+                type="button"
+                onClick={() => setActiveFeatureId('')}
+                className={`w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                  !activeFeatureId
+                    ? 'border-slate-900 bg-white text-slate-950 dark:border-slate-300 dark:bg-white/10 dark:text-white'
+                    : 'border-slate-200 bg-white/70 text-slate-600 hover:bg-white dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-300 dark:hover:bg-white/[0.08]'
+                }`}
+              >
+                All deliverables
+              </button>
+              {features.length === 0 ? (
+                <p className="py-3 text-center text-xs text-slate-400">No features added yet.</p>
+              ) : features.map((feature) => (
+                <button
+                  key={feature._id}
+                  type="button"
+                  onClick={() => setActiveFeatureId(feature._id)}
+                  className={`w-full rounded-lg border px-3 py-2 text-left transition-colors ${
+                    activeFeatureId === feature._id
+                      ? 'border-slate-900 bg-white shadow-sm dark:border-slate-300 dark:bg-white/10'
+                      : 'border-slate-200 bg-white/70 hover:bg-white dark:border-white/[0.08] dark:bg-white/[0.04] dark:hover:bg-white/[0.08]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="min-w-0 truncate text-xs font-semibold text-slate-900 dark:text-slate-100">{feature.title}</span>
+                    <Badge variant={FEATURE_STATUS_COLORS[feature.status] || 'secondary'} className="shrink-0 text-[10px]">
+                      {feature.status?.replace('_', ' ') || 'open'}
+                    </Badge>
+                  </div>
+                  {feature.description && (
+                    <p className="mt-1 max-h-8 overflow-hidden text-[11px] leading-4 text-slate-500 dark:text-slate-400">{feature.description}</p>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="flex justify-between items-center">
             <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-               Deliverables
+               {activeFeature ? activeFeature.title : 'Deliverables'}
             </h2>
             {canUpload && (
               <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setUploadOpen(true)}>
@@ -196,9 +327,9 @@ const ProjectDetail = () => {
               </div>
             ) : (
               <DeliverableList
-                deliverables={deliverables}
+                deliverables={visibleDeliverables}
                 activeDeliverableId={activeDeliverable?._id}
-                onSelect={setActiveDeliverable}
+                onSelect={(deliverable) => setActiveDeliverableId(deliverable._id)}
               />
             )}
           </div>
@@ -281,9 +412,12 @@ const ProjectDetail = () => {
       </div>
 
       <UploadModal
+        key={activeFeatureId || 'general'}
         isOpen={isUploadOpen}
         onClose={() => setUploadOpen(false)}
         projectId={id}
+        features={features}
+        selectedFeatureId={activeFeatureId}
         onUploadSuccess={handleUploadSuccess}
       />
 

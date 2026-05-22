@@ -1,7 +1,5 @@
 import React from 'react';
-import { Download, File, Image as ImageIcon, FileText, Archive, MessageSquare } from 'lucide-react';
-import { Badge } from '../ui/Badge';
-import { Avatar } from '../ui/Avatar';
+import { Download, File, Image as ImageIcon, FileText, Archive } from 'lucide-react';
 
 export default function DeliverableList({ deliverables, activeDeliverableId, onSelect, feedbackCounts = {} }) {
   const getIcon = (type) => {
@@ -67,6 +65,11 @@ export default function DeliverableList({ deliverables, activeDeliverableId, onS
                   )}
                   <span>{getTimeAgo(item.createdAt)}</span>
                 </div>
+                {item.description && (
+                  <p className="mt-1 max-h-8 overflow-hidden text-[11px] leading-4 text-slate-500 dark:text-slate-400">
+                    {item.description}
+                  </p>
+                )}
               </div>
             </div>
 

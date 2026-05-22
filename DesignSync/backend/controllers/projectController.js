@@ -28,11 +28,10 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
   }
   // Admin sees all. 
   
-  console.log(`[DEBUG] getProjects for user: ${req.user.email} (role: ${req.user.role})`);
-  console.log(`[DEBUG] query:`, query);
-
-  const projects = await Project.find(query).populate('clientId designerIds', 'name email avatar');
-  console.log(`[DEBUG] found projects:`, projects.length);
+  const projects = await Project.find(query)
+    .populate('clientId designerIds', 'name email avatar')
+    .sort({ updatedAt: -1 })
+    .lean();
   
   res.status(200).json({ success: true, count: projects.length, data: projects });
 });
@@ -101,6 +100,65 @@ exports.updateProjectStatus = asyncHandler(async (req, res, next) => {
   });
 
   res.status(200).json({ success: true, data: project });
+});
+
+// @desc    Add a feature/request to a project
+exports.addProjectFeature = asyncHandler(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
+  if (!project) return next(new ApiError(404, 'Project not found'));
+
+  if (!canAccessProject(req.user, project)) {
+    return next(new ApiError(403, 'Not authorized to access this project'));
+  }
+
+  const { title, description } = req.body;
+  if (!title?.trim()) {
+    return next(new ApiError(400, 'Feature title is required'));
+  }
+
+  project.features.push({
+    title: title.trim(),
+    description: description?.trim() || '',
+    createdBy: req.user._id
+  });
+  await project.save();
+
+  const feature = project.features[project.features.length - 1];
+
+  await notifyUsers(req, [project.clientId, ...(project.designerIds || [])], {
+    type: 'info',
+    message: `Feature "${feature.title}" was added to "${project.title}"`,
+    link: `/studios/${project._id}`
+  });
+
+  res.status(201).json({ success: true, data: feature });
+});
+
+// @desc    Update a project feature status
+exports.updateProjectFeature = asyncHandler(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
+  if (!project) return next(new ApiError(404, 'Project not found'));
+
+  if (!canAccessProject(req.user, project)) {
+    return next(new ApiError(403, 'Not authorized to access this project'));
+  }
+
+  const feature = project.features.id(req.params.featureId);
+  if (!feature) return next(new ApiError(404, 'Feature not found'));
+
+  const { title, description, status } = req.body;
+  if (title !== undefined) feature.title = title.trim();
+  if (description !== undefined) feature.description = description.trim();
+  if (status !== undefined) {
+    if (!['open', 'in_progress', 'submitted', 'approved'].includes(status)) {
+      return next(new ApiError(400, 'Invalid feature status'));
+    }
+    feature.status = status;
+  }
+
+  await project.save();
+
+  res.status(200).json({ success: true, data: feature });
 });
 
 // @desc    Permanently delete a completed project

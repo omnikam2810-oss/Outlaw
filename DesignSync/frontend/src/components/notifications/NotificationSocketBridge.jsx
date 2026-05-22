@@ -14,6 +14,7 @@ export default function NotificationSocketBridge() {
       toast.success(data.message);
     };
 
+    if (!socket.connected) socket.connect();
     socket.on('notification', handleNotification);
     socket.emit('register:user', userId);
 

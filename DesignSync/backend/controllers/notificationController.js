@@ -3,7 +3,10 @@ const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 
 exports.getNotifications = asyncHandler(async (req, res, next) => {
-  const notifications = await Notification.find({ userId: req.user._id }).sort({ createdAt: -1 });
+  const notifications = await Notification.find({ userId: req.user._id })
+    .sort({ createdAt: -1 })
+    .limit(25)
+    .lean();
   res.status(200).json({ success: true, count: notifications.length, data: notifications });
 });
 

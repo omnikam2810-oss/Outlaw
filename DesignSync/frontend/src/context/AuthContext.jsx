@@ -3,8 +3,17 @@ import api from '../api/axios'; // we will implement this axios instance soon
 import { AuthContext } from './AuthContextValue';
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    const cached = localStorage.getItem('ds_user');
+    if (!cached) return null;
+    try {
+      return JSON.parse(cached);
+    } catch {
+      localStorage.removeItem('ds_user');
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(() => !localStorage.getItem('ds_user') && Boolean(localStorage.getItem('ds_token')));
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,9 +25,12 @@ export const AuthProvider = ({ children }) => {
       try {
         const { data } = await api.get('/auth/me');
         setUser(data.user);
+        localStorage.setItem('ds_user', JSON.stringify(data.user));
       } catch {
         setUser(null);
         localStorage.removeItem('ds_token');
+        localStorage.removeItem('ds_refresh_token');
+        localStorage.removeItem('ds_user');
       } finally {
         setLoading(false);
       }
@@ -30,6 +42,7 @@ export const AuthProvider = ({ children }) => {
     const { data } = await api.post('/auth/login', { email, password });
     localStorage.setItem('ds_token', data.token);
     localStorage.setItem('ds_refresh_token', data.refreshToken);
+    localStorage.setItem('ds_user', JSON.stringify(data.user));
     setUser(data.user);
     return data;
   };
@@ -39,6 +52,7 @@ export const AuthProvider = ({ children }) => {
     if (data.token) {
       localStorage.setItem('ds_token', data.token);
       localStorage.setItem('ds_refresh_token', data.refreshToken);
+      localStorage.setItem('ds_user', JSON.stringify(data.user));
       setUser(data.user);
     }
     return data;
@@ -48,11 +62,13 @@ export const AuthProvider = ({ children }) => {
     await api.post('/auth/logout');
     localStorage.removeItem('ds_token');
     localStorage.removeItem('ds_refresh_token');
+    localStorage.removeItem('ds_user');
     setUser(null);
   };
 
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
+    localStorage.setItem('ds_user', JSON.stringify(updatedUser));
   };
 
   return (

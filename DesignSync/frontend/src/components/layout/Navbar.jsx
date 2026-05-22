@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 import { useTheme } from '../../context/useTheme';
@@ -27,24 +27,43 @@ const Navbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [bellOpen, setBellOpen] = useState(false);
+  const [notificationsLoaded, setNotificationsLoaded] = useState(false);
   const bellRef = useRef(null);
+
+  const fetchNotifications = useCallback(async () => {
+    if (!user) return;
+    try {
+      const { data } = await api.get('/notifications');
+      setNotifications(data.data || []);
+      setNotificationsLoaded(true);
+    } catch { /* silent */ }
+  }, [user]);
 
   useEffect(() => {
     let active = true;
-    const fetchNotifications = async () => {
-      try {
-        const { data } = await api.get('/notifications');
-        if (active) setNotifications(data.data || []);
-      } catch { /* silent */ }
+    if (!user) return undefined;
+
+    const loadWhenIdle = () => {
+      if (!active) return;
+      fetchNotifications();
     };
 
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 60000);
+    const timeout = window.setTimeout(loadWhenIdle, 1200);
+    const interval = setInterval(() => {
+      if (active && notificationsLoaded) fetchNotifications();
+    }, 120000);
     return () => {
       active = false;
+      window.clearTimeout(timeout);
       clearInterval(interval);
     };
-  }, []);
+  }, [user, notificationsLoaded, fetchNotifications]);
+
+  const toggleBell = () => {
+    const nextOpen = !bellOpen;
+    setBellOpen(nextOpen);
+    if (nextOpen && !notificationsLoaded) fetchNotifications();
+  };
 
   useEffect(() => {
     const handleNotification = (notification) => {
@@ -117,7 +136,7 @@ const Navbar = ({ onMenuClick }) => {
         {/* Notification Bell */}
         <div ref={bellRef} className="relative">
           <button
-            onClick={() => setBellOpen((o) => !o)}
+            onClick={toggleBell}
             aria-label="Notifications"
             className="relative rounded-lg p-2 text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-950 hover:shadow-sm dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-[#F9FAFB]"
           >

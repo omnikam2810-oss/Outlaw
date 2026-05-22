@@ -29,7 +29,10 @@ exports.getDeliverables = asyncHandler(async (req, res, next) => {
   const project = await ensureProjectAccess(req, next);
   if (!project) return;
 
-  const deliverables = await Deliverable.find({ projectId: req.params.projectId })
+  const query = { projectId: req.params.projectId };
+  if (req.query.featureId) query.featureId = req.query.featureId;
+
+  const deliverables = await Deliverable.find(query)
     .populate('uploadedBy', 'name avatar')
     .sort({ createdAt: -1 });
   
@@ -44,19 +47,33 @@ exports.uploadDeliverable = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, 'Please upload a file'));
   }
   
-  const { title, type, version } = req.body;
+  const { title, description, type, version, featureId } = req.body;
   const projectId = req.params.projectId;
+
+  if (featureId && !project.features.id(featureId)) {
+    return next(new ApiError(400, 'Selected feature does not belong to this project'));
+  }
 
   const result = await uploadToCloudinary(req.file.buffer, req.file.mimetype, 'designsync', req.file.originalname);
 
   const deliverable = await Deliverable.create({
     projectId,
+    featureId: featureId || undefined,
     title: title || req.file.originalname,
+    description: description?.trim() || '',
     type: type || req.file.mimetype || 'application/octet-stream',
     fileUrl: result.url,
     version: version || '1',
     uploadedBy: req.user._id
   });
+
+  if (featureId) {
+    const feature = project.features.id(featureId);
+    if (feature && feature.status !== 'approved') {
+      feature.status = 'submitted';
+      await project.save();
+    }
+  }
 
   const populated = await Deliverable.findById(deliverable._id).populate('uploadedBy', 'name avatar');
   

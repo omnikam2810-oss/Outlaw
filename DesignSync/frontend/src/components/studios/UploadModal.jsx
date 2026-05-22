@@ -5,9 +5,11 @@ import { Button } from '../ui/Button';
 import api from '../../api/axios';
 import { useToast } from '../ui/useToast';
 
-export default function UploadModal({ isOpen, onClose, projectId, onUploadSuccess }) {
+export default function UploadModal({ isOpen, onClose, projectId, features = [], selectedFeatureId = '', onUploadSuccess }) {
   const [file, setFile] = useState(null);
   const [version, setVersion] = useState('1');
+  const [featureId, setFeatureId] = useState(selectedFeatureId || '');
+  const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const { addToast } = useToast();
@@ -23,6 +25,8 @@ export default function UploadModal({ isOpen, onClose, projectId, onUploadSucces
     formData.append('version', version);
     formData.append('type', file.type || 'application/octet-stream');
     formData.append('title', file.name);
+    if (featureId) formData.append('featureId', featureId);
+    if (description.trim()) formData.append('description', description.trim());
 
     try {
       const { data } = await api.post(`/projects/${projectId}/deliverables`, formData, {
@@ -49,6 +53,8 @@ export default function UploadModal({ isOpen, onClose, projectId, onUploadSucces
     if (uploading) return;
     setFile(null);
     setVersion('1');
+    setFeatureId(selectedFeatureId || '');
+    setDescription('');
     setProgress(0);
     onClose();
   };
@@ -59,16 +65,41 @@ export default function UploadModal({ isOpen, onClose, projectId, onUploadSucces
         <DropZone file={file} setFile={setFile} />
         
         {file && (
-          <div>
-            <label className="block text-sm font-medium mb-1">Version identifier</label>
-            <input 
-              type="text" 
-              className="input-field" 
-              placeholder="e.g. v2, v3, Initial Draft" 
-              value={version}
-              onChange={(e) => setVersion(e.target.value)}
-            />
-          </div>
+          <>
+            <div>
+              <label className="block text-sm font-medium mb-1">Feature</label>
+              <select
+                className="input-field"
+                value={featureId}
+                onChange={(e) => setFeatureId(e.target.value)}
+              >
+                <option value="">General project deliverable</option>
+                {features.map((feature) => (
+                  <option key={feature._id} value={feature._id}>{feature.title}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Designer response</label>
+              <textarea
+                rows={3}
+                className="input-field resize-none"
+                placeholder="Describe what was delivered for this feature."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Version identifier</label>
+              <input 
+                type="text" 
+                className="input-field" 
+                placeholder="e.g. v2, v3, Initial Draft" 
+                value={version}
+                onChange={(e) => setVersion(e.target.value)}
+              />
+            </div>
+          </>
         )}
 
         <p className="text-xs text-slate-500 dark:text-slate-400">
