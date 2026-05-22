@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Folder, BookOpen, Bell, Settings, LogOut, X, Users, Layers3 } from 'lucide-react';
+import { LayoutDashboard, Folder, BookOpen, Settings, LogOut, X, Users, Layers3 } from 'lucide-react';
 import { useAuth } from '../../context/useAuth';
 
 const MENU_CONFIG = {
@@ -9,23 +9,19 @@ const MENU_CONFIG = {
     { id: 'users', icon: Users, label: 'User Management', to: '/admin/users' },
     { id: 'studios', icon: Folder, label: 'Studios', to: '/studios' },
     { id: 'academy', icon: BookOpen, label: 'Academy', to: '/academy' },
-    { id: 'notifications', icon: Bell, label: 'Notifications', to: '/notifications' },
     { id: 'settings', icon: Settings, label: 'Settings', to: '/settings' },
   ],
   designer: [
     { id: 'studios', icon: Folder, label: 'Studios', to: '/studios' },
     { id: 'academy', icon: BookOpen, label: 'Academy', to: '/academy' },
-    { id: 'notifications', icon: Bell, label: 'Notifications', to: '/notifications' },
     { id: 'settings', icon: Settings, label: 'Settings', to: '/settings' },
   ],
   enterprise_client: [
     { id: 'studios', icon: Folder, label: 'Client Review', to: '/studios' },
-    { id: 'notifications', icon: Bell, label: 'Notifications', to: '/notifications' },
     { id: 'settings', icon: Settings, label: 'Settings', to: '/settings' },
   ],
   academy_student: [
     { id: 'academy', icon: BookOpen, label: 'Academy', to: '/academy' },
-    { id: 'notifications', icon: Bell, label: 'Notifications', to: '/notifications' },
     { id: 'settings', icon: Settings, label: 'Settings', to: '/settings' },
   ]
 };
