@@ -8,6 +8,7 @@ exports.getMetrics = asyncHandler(async (req, res, next) => {
   const totalProjects = await Project.countDocuments();
   const activeClients = await User.countDocuments({ role: 'enterprise_client' });
   const totalUsers = await User.countDocuments();
+  const pendingApprovals = await User.countDocuments({ approvalStatus: 'pending' });
   const activeProjects = await Project.countDocuments({ status: { $in: ['draft', 'in_review', 'delivered'] } });
 
   res.status(200).json({
@@ -16,6 +17,7 @@ exports.getMetrics = asyncHandler(async (req, res, next) => {
       totalProjects,
       activeClients,
       totalUsers,
+      pendingApprovals,
       activeProjects
     }
   });

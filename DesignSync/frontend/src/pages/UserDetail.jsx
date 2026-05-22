@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Building2, CalendarDays, Camera, Mail, Shield, Trash2 } from 'lucide-react';
+import { ArrowLeft, Building2, CalendarDays, Camera, Check, Mail, Shield, Trash2, X } from 'lucide-react';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -12,6 +12,12 @@ const ROLE_BADGE = {
   designer: 'primary',
   enterprise_client: 'warning',
   academy_student: 'secondary',
+};
+
+const APPROVAL_BADGE = {
+  approved: 'success',
+  pending: 'warning',
+  rejected: 'danger',
 };
 
 const formatDate = (value) => {
@@ -122,9 +128,20 @@ export default function UserDetail() {
     }
   };
 
+  const updateApproval = async (status) => {
+    try {
+      const { data } = await api.put(`/users/${id}/approval`, { status });
+      setUser(data.data);
+      addToast(`User ${status}`, 'success');
+    } catch (err) {
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to update approval', 'error');
+    }
+  };
+
   const detailItems = [
     { icon: Mail, label: 'Email', value: user.email || '-' },
     { icon: Shield, label: 'Role', value: user.role?.replace('_', ' ') || '-', valueClassName: 'capitalize' },
+    { icon: Shield, label: 'Approval', value: user.approvalStatus || 'approved', valueClassName: 'capitalize' },
     { icon: Building2, label: 'Company', value: user.companyName || '-' },
     { icon: CalendarDays, label: 'Joined', value: formatDate(user.createdAt) },
     { icon: CalendarDays, label: 'Last updated', value: formatDate(user.updatedAt) },
@@ -171,6 +188,21 @@ export default function UserDetail() {
             <Badge variant={ROLE_BADGE[user.role] || 'secondary'} className="capitalize w-fit">
               {user.role?.replace('_', ' ') || 'user'}
             </Badge>
+            <Badge variant={APPROVAL_BADGE[user.approvalStatus || 'approved'] || 'secondary'} className="capitalize w-fit">
+              {user.approvalStatus || 'approved'}
+            </Badge>
+            {(user.approvalStatus || 'approved') !== 'approved' && (
+              <Button type="button" onClick={() => updateApproval('approved')}>
+                <Check className="mr-2 h-4 w-4" />
+                Approve
+              </Button>
+            )}
+            {(user.approvalStatus || 'approved') !== 'rejected' && (
+              <Button type="button" variant="secondary" onClick={() => updateApproval('rejected')}>
+                <X className="mr-2 h-4 w-4" />
+                Reject
+              </Button>
+            )}
           </div>
         </div>
 

@@ -11,8 +11,16 @@ import { Building2, Layers3, LockKeyhole } from 'lucide-react';
 const registerSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters')
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  role: z.enum(['admin', 'designer', 'enterprise_client', 'academy_student'])
 });
+
+const ROLE_OPTIONS = [
+  { value: 'academy_student', label: 'Student' },
+  { value: 'designer', label: 'Designer' },
+  { value: 'enterprise_client', label: 'Client' },
+  { value: 'admin', label: 'Admin' },
+];
 
 const Register = () => {
   const { register: registerUser } = useAuth();
@@ -22,20 +30,18 @@ const Register = () => {
   
   const { register, handleSubmit, formState: { errors } } = useRHForm({
     resolver: zodResolver(registerSchema),
-    mode: 'onBlur'
+    mode: 'onBlur',
+    defaultValues: { role: 'academy_student' }
   });
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      const res = await registerUser({ ...data, role: 'academy_student' });
-      addToast('Registered successfully', 'success');
-      
-      if (res.user.role === 'admin') navigate('/admin');
-      else if (res.user.role === 'academy_student') navigate('/academy');
-      else navigate('/studios');
+      await registerUser(data);
+      addToast('Registration submitted for super admin approval', 'success');
+      navigate('/login');
     } catch (err) {
-      addToast(err.response?.data?.error || 'Failed to register', 'error');
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to register', 'error');
     } finally {
       setLoading(false);
     }
@@ -56,10 +62,10 @@ const Register = () => {
               </div>
             </div>
             <div className="mt-8 lg:mt-16">
-              <p className="text-sm font-semibold uppercase text-amber-300">Student access</p>
-              <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">Start academy work with a verified student account.</h1>
+              <p className="text-sm font-semibold uppercase text-amber-300">Approval required</p>
+              <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">Request access for your DesignSync role.</h1>
               <p className="mt-4 text-sm leading-6 text-slate-300">
-                Designers and clients sign in with IDs created by the admin, while students can register directly for academy assignments.
+                Admins, students, designers, and clients can register. A super admin reviews each account before sign-in is enabled.
               </p>
             </div>
           </div>
@@ -73,10 +79,10 @@ const Register = () => {
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-[#9CA3AF]">
               <Building2 className="h-3.5 w-3.5 text-teal-500 dark:text-blue-400" />
-              Academy student account
+              Workspace access request
             </div>
             <h1 className="mt-5 text-2xl font-semibold text-slate-950 dark:text-white">Create your account</h1>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Student registration is open. Designer and client IDs are created by the admin.</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Choose the role you need. Sign-in starts after super admin approval.</p>
           </div>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -101,6 +107,19 @@ const Register = () => {
               />
               {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Role</label>
+              <select
+                {...register('role')}
+                className={`input-field ${errors.role ? 'border-red-500 focus:ring-red-500' : ''}`}
+              >
+                {ROLE_OPTIONS.map((role) => (
+                  <option key={role.value} value={role.value}>{role.label}</option>
+                ))}
+              </select>
+              {errors.role && <p className="mt-1 text-sm text-red-500">{errors.role.message}</p>}
+            </div>
             
             <div>
               <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">Password</label>
@@ -113,7 +132,7 @@ const Register = () => {
             </div>
 
             <Button type="submit" className="w-full" isLoading={loading}>
-              Create student account
+              Submit for approval
             </Button>
           </form>
           

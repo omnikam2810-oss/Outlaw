@@ -69,7 +69,7 @@ const AdminDashboard = () => {
         {[
           { label: 'Total Projects', value: metrics.totalProjects, icon: Folder, color: 'text-slate-700 bg-slate-100 dark:text-[#F9FAFB] dark:bg-white/[0.06]' },
           { label: 'Active Clients', value: metrics.activeClients, icon: Users, color: 'text-teal-700 bg-teal-50 dark:text-blue-300 dark:bg-blue-500/10' },
-          { label: 'Total Users', value: metrics.totalUsers, icon: BookOpen, color: 'text-indigo-700 bg-indigo-50 dark:text-blue-300 dark:bg-blue-500/10' },
+          { label: 'Pending Approvals', value: metrics.pendingApprovals, icon: BookOpen, color: 'text-indigo-700 bg-indigo-50 dark:text-blue-300 dark:bg-blue-500/10' },
           { label: 'Active Projects', value: metrics.activeProjects, icon: Clock, color: 'text-slate-700 bg-slate-100 dark:text-amber-300 dark:bg-amber-500/10' },
         ].map((stat, i) => (
           <div key={i} className="layout-card p-5">

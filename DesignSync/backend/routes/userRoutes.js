@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUsers, getUser, getEnterpriseClients, getDesigners, createUser, updateUser, updateUserAvatar, deleteUser, updateProfile, updateProfileAvatar, updatePassword } = require('../controllers/userController');
+const { getUsers, getUser, getEnterpriseClients, getDesigners, createUser, updateUser, updateApprovalStatus, updateUserAvatar, deleteUser, updateProfile, updateProfileAvatar, updatePassword } = require('../controllers/userController');
 const { authenticate } = require('../middleware/auth');
 const { authorize } = require('../middleware/rbac');
 const upload = require('../middleware/upload');
@@ -21,6 +21,7 @@ router.get('/', getUsers);
 router.post('/', createUser);
 router.get('/:id', getUser);
 router.put('/:id/avatar', upload.single('avatar'), updateUserAvatar);
+router.put('/:id/approval', updateApprovalStatus);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
 

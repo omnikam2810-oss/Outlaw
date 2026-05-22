@@ -4,6 +4,7 @@ const ApiError = require('../utils/ApiError');
 const bcrypt = require('bcryptjs');
 const { notifyUsers } = require('../utils/notify');
 const { uploadToCloudinary } = require('../services/storageService');
+const { createSupabaseUser } = require('../services/supabaseAuthService');
 
 const ADMIN_MANAGED_ROLES = ['designer', 'enterprise_client', 'academy_student'];
 
@@ -20,7 +21,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.getEnterpriseClients = asyncHandler(async (req, res, next) => {
-  const clients = await User.find({ role: 'enterprise_client', isActive: { $ne: false } })
+  const clients = await User.find({ role: 'enterprise_client', isActive: { $ne: false }, approvalStatus: { $ne: 'pending' } })
     .select('name email avatar companyName role')
     .sort({ name: 1 });
 
@@ -28,7 +29,7 @@ exports.getEnterpriseClients = asyncHandler(async (req, res, next) => {
 });
 
 exports.getDesigners = asyncHandler(async (req, res, next) => {
-  const designers = await User.find({ role: 'designer', isActive: { $ne: false } })
+  const designers = await User.find({ role: 'designer', isActive: { $ne: false }, approvalStatus: { $ne: 'pending' } })
     .select('name email avatar role')
     .sort({ name: 1 });
 
@@ -59,6 +60,12 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(normalizedPassword, salt);
+  const supabaseUser = await createSupabaseUser({
+    email: normalizedEmail,
+    password: normalizedPassword,
+    name: name.trim(),
+    role
+  });
 
   const user = await User.create({
     name: name.trim(),
@@ -66,7 +73,12 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     passwordHash,
     role,
     companyName,
-    avatar
+    avatar,
+    approvalStatus: 'approved',
+    approvedBy: req.user._id,
+    approvedAt: Date.now(),
+    supabaseUserId: supabaseUser?.id,
+    authProvider: supabaseUser ? 'supabase' : 'local'
   });
 
   const admins = await User.find({ role: 'admin' }).select('_id');
@@ -95,6 +107,36 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     runValidators: true
   }).select('-passwordHash');
 
+  res.status(200).json({ success: true, data: user });
+});
+
+exports.updateApprovalStatus = asyncHandler(async (req, res, next) => {
+  const { status, reason } = req.body;
+  if (!['approved', 'rejected', 'pending'].includes(status)) {
+    return next(new ApiError(400, 'Approval status must be pending, approved, or rejected'));
+  }
+
+  const existingUser = await User.findById(req.params.id);
+  if (!existingUser) return next(new ApiError(404, 'User not found'));
+  if (existingUser._id.equals(req.user._id)) {
+    return next(new ApiError(400, 'You cannot change your own approval status'));
+  }
+
+  existingUser.approvalStatus = status;
+  existingUser.rejectionReason = status === 'rejected' ? reason || null : null;
+  existingUser.approvedBy = status === 'approved' ? req.user._id : null;
+  existingUser.approvedAt = status === 'approved' ? Date.now() : null;
+  existingUser.isActive = status === 'rejected' ? false : existingUser.isActive;
+  await existingUser.save();
+
+  await notifyUsers(req, [existingUser._id], {
+    type: status === 'approved' ? 'success' : 'info',
+    message: status === 'approved'
+      ? 'Your DesignSync account has been approved'
+      : `Your DesignSync account approval status is ${status}`
+  });
+
+  const user = await User.findById(existingUser._id).select('-passwordHash');
   res.status(200).json({ success: true, data: user });
 });
 

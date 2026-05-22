@@ -19,6 +19,12 @@ const ROLE_BADGE = {
   academy_student: 'secondary',
 };
 
+const APPROVAL_BADGE = {
+  approved: 'success',
+  pending: 'warning',
+  rejected: 'danger',
+};
+
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +72,16 @@ export default function UserManagement() {
       addToast('Failed to update role', 'error');
     } finally {
       setEditingId(null);
+    }
+  };
+
+  const updateApproval = async (targetUser, status) => {
+    try {
+      const { data } = await api.put(`/users/${targetUser._id}/approval`, { status });
+      setUsers((prev) => prev.map((u) => u._id === targetUser._id ? data.data : u));
+      addToast(`User ${status}`, 'success');
+    } catch (err) {
+      addToast(err.response?.data?.error || err.response?.data?.message || 'Failed to update approval', 'error');
     }
   };
 
@@ -149,7 +165,7 @@ export default function UserManagement() {
         eyebrow="Identity administration"
         icon={Users}
         title="User Management"
-        description={`${users.length} total users. Designers and clients are created here by admin only.`}
+        description={`${users.length} total users. Pending registrations require super admin approval before sign-in.`}
       />
 
       <form onSubmit={createUser} className="layout-card p-5">
@@ -157,7 +173,7 @@ export default function UserManagement() {
           <UserPlus className="h-5 w-5 text-teal-700" />
           <div>
           <h2 className="font-semibold text-slate-900 dark:text-white">Create login ID</h2>
-            <p className="text-xs text-slate-500">Share this email and password with the designer or client after creating the account.</p>
+            <p className="text-xs text-slate-500">Accounts created here are approved immediately. Self-registered accounts appear below as pending.</p>
           </div>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
@@ -238,6 +254,7 @@ export default function UserManagement() {
               <tr className="border-b border-slate-200 bg-[#f1f5f9] dark:border-white/10 dark:bg-white/5">
                 <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">User</th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">Role</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">Approval</th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">Joined</th>
                 <th className="px-5 py-3.5" />
               </tr>
@@ -246,14 +263,14 @@ export default function UserManagement() {
               {loading ? (
                 [1, 2, 3, 4].map((i) => (
                   <tr key={i}>
-                    <td colSpan={4} className="px-5 py-4">
+                    <td colSpan={5} className="px-5 py-4">
                       <div className="h-10 skeleton rounded-lg" />
                     </td>
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-5 py-12 text-center text-slate-400">
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-400">
                     No users found.
                   </td>
                 </tr>
@@ -306,6 +323,11 @@ export default function UserManagement() {
                         </Badge>
                       )}
                     </td>
+                    <td className="px-5 py-4">
+                      <Badge variant={APPROVAL_BADGE[u.approvalStatus || 'approved'] || 'secondary'} className="capitalize text-xs">
+                        {(u.approvalStatus || 'approved').replace('_', ' ')}
+                      </Badge>
+                    </td>
                     <td className="px-5 py-4 text-slate-500 text-xs">
                       {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}
                     </td>
@@ -320,6 +342,28 @@ export default function UserManagement() {
                           <Eye className="h-4 w-4" />
                           Details
                         </button>
+                        {(u.approvalStatus || 'approved') !== 'approved' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); updateApproval(u, 'approved'); }}
+                            disabled={u._id === currentUser?.id || u._id === currentUser?._id}
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-500/10 disabled:opacity-30"
+                            aria-label="Approve user"
+                          >
+                            <Check className="h-4 w-4" />
+                            Approve
+                          </button>
+                        )}
+                        {(u.approvalStatus || 'approved') !== 'rejected' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); updateApproval(u, 'rejected'); }}
+                            disabled={u._id === currentUser?.id || u._id === currentUser?._id}
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-30"
+                            aria-label="Reject user"
+                          >
+                            <X className="h-4 w-4" />
+                            Reject
+                          </button>
+                        )}
                         <label
                           onClick={(e) => e.stopPropagation()}
                           className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-[#9CA3AF] dark:hover:bg-white/[0.06] dark:hover:text-white"
