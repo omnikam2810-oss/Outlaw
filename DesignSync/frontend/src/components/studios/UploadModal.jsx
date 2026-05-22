@@ -60,7 +60,7 @@ export default function UploadModal({ isOpen, onClose, projectId, features = [],
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Upload New Deliverable">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Respond With Deliverable">
       <div className="space-y-4">
         <DropZone file={file} setFile={setFile} />
         

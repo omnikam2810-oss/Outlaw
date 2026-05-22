@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { Folder, Plus, BriefcaseBusiness, CalendarDays } from 'lucide-react';
+import { Folder, Plus, BriefcaseBusiness, CalendarDays, Trash2 } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -14,14 +14,18 @@ const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [view, setView] = useState('active');
   const { user } = useAuth();
   const navigate = useNavigate();
   const isClient = user?.role === 'enterprise_client';
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await api.get('/projects');
+        setLoading(true);
+        const params = isAdmin && view === 'completed' ? '?view=completed' : '';
+        const response = await api.get(`/projects${params}`);
         setProjects(response.data.data);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -32,10 +36,23 @@ const ProjectList = () => {
     };
 
     fetchProjects();
-  }, []);
+  }, [isAdmin, view]);
 
   const handleProjectCreated = (newProject) => {
     setProjects([newProject, ...projects]);
+  };
+
+  const deleteProject = async (project, e) => {
+    e.stopPropagation();
+    if (!window.confirm(`Permanently delete "${project.title}"? This removes its deliverables and feedback too.`)) return;
+
+    try {
+      await api.delete(`/projects/${project._id}`);
+      setProjects((prev) => prev.filter((item) => item._id !== project._id));
+      toast.success('Project permanently deleted');
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.response?.data?.error || 'Failed to delete project');
+    }
   };
 
   if (loading) {
@@ -67,14 +84,35 @@ const ProjectList = () => {
         eyebrow="Studios workspace"
         icon={BriefcaseBusiness}
         title={isClient ? 'Client Review' : 'Studios Projects'}
-        description={isClient ? 'Open a project to inspect deliverables, pin comments, and approve or request changes.' : 'A focused board for briefs, client reviews, and delivery status.'}
+        description={view === 'completed' ? 'Review completed work and permanently remove projects when cleanup is needed.' : isClient ? 'Open a project to inspect deliverables, pin comments, and approve or request changes.' : 'A focused board for briefs, client reviews, and delivery status.'}
         actions={(
           <>
+            {isAdmin && (
+              <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 text-xs font-semibold dark:border-white/[0.08] dark:bg-white/[0.05]">
+                {[
+                  { key: 'active', label: 'Active' },
+                  { key: 'completed', label: 'Completed' },
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => setView(item.key)}
+                    className={`rounded-md px-3 py-1.5 transition-colors ${
+                      view === item.key
+                        ? 'bg-slate-950 text-white dark:bg-blue-600'
+                        : 'text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="hidden sm:block rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-white/[0.08] dark:bg-white/[0.05]">
               <span className="font-semibold text-slate-950 dark:text-white">{projects.length}</span>
-              <span className="ml-1 text-slate-500">{isClient ? 'to review' : 'projects'}</span>
+              <span className="ml-1 text-slate-500">{view === 'completed' ? 'completed' : isClient ? 'to review' : 'projects'}</span>
             </div>
-            {(user?.role === 'admin' || user?.role === 'designer') && (
+            {(user?.role === 'admin' || user?.role === 'designer') && view !== 'completed' && (
               <Button size="sm" onClick={() => setModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-1" /> New Project
               </Button>
@@ -90,11 +128,13 @@ const ProjectList = () => {
           </div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">No active projects</h2>
           <p className="text-slate-500 max-w-sm mx-auto mt-1 mb-6">
-            {user?.role === 'enterprise_client' 
+            {view === 'completed'
+              ? 'Completed projects will appear here after an admin marks work as done or a client approves delivery.'
+              : user?.role === 'enterprise_client' 
               ? "You don't have any projects assigned for review yet. New project work will appear here when your design team assigns it to you."
               : "Start by creating your first project folder to collaborate with clients."}
           </p>
-          {(user?.role === 'admin' || user?.role === 'designer') && (
+          {(user?.role === 'admin' || user?.role === 'designer') && view !== 'completed' && (
             <Button variant="secondary" onClick={() => setModalOpen(true)}>
                Create Product Folder
             </Button>
@@ -112,6 +152,14 @@ const ProjectList = () => {
                   {project.status || 'Draft'}
                 </Badge>
               </div>
+              {isAdmin && view === 'completed' && (
+                <div className="mt-4 flex justify-end">
+                  <Button size="sm" variant="danger" onClick={(e) => deleteProject(project, e)}>
+                    <Trash2 className="mr-1 h-4 w-4" />
+                    Delete Permanently
+                  </Button>
+                </div>
+              )}
 
               <div className="mt-5 rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-white/[0.08] dark:bg-white/[0.04]">
                 <div className="flex items-center justify-between gap-3 text-xs">

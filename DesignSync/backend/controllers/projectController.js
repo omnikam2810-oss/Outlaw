@@ -6,8 +6,12 @@ const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { notifyUsers } = require('../utils/notify');
 
+const COMPLETED_PROJECT_STATUSES = ['approved', 'completed'];
+const PROJECT_STATUSES = ['draft', 'in_review', 'approved', 'delivered', 'completed'];
+
 const canAccessProject = (user, project) => {
   if (user.role === 'admin') return true;
+  if (COMPLETED_PROJECT_STATUSES.includes(project.status)) return false;
   if (user.role === 'enterprise_client') {
     return project.clientId?._id?.toString?.() === user._id.toString() || project.clientId?.toString?.() === user._id.toString();
   }
@@ -20,13 +24,17 @@ const canAccessProject = (user, project) => {
 // @desc    Get all projects (filtered by role)
 exports.getProjects = asyncHandler(async (req, res, next) => {
   let query = {};
+  const showCompleted = req.user.role === 'admin' && req.query.view === 'completed';
   
   if (req.user.role === 'enterprise_client') {
     query.clientId = req.user._id;
   } else if (req.user.role === 'designer') {
     query.designerIds = req.user._id;
   }
-  // Admin sees all. 
+
+  query.status = showCompleted
+    ? { $in: COMPLETED_PROJECT_STATUSES }
+    : { $nin: COMPLETED_PROJECT_STATUSES };
   
   const projects = await Project.find(query)
     .populate('clientId designerIds', 'name email avatar')
@@ -83,11 +91,23 @@ exports.getProject = asyncHandler(async (req, res, next) => {
 exports.updateProjectStatus = asyncHandler(async (req, res, next) => {
   const project = await Project.findById(req.params.id);
   if (!project) return next(new ApiError(404, 'Project not found'));
+
+  if (!canAccessProject(req.user, project)) {
+    return next(new ApiError(403, 'Not authorized to access this project'));
+  }
   
   const { status } = req.body;
+
+  if (!PROJECT_STATUSES.includes(status)) {
+    return next(new ApiError(400, 'Invalid project status'));
+  }
   
   if (req.user.role === 'enterprise_client' && status !== 'approved' && status !== 'in_review') {
     return next(new ApiError(403, 'Clients can only approve milestones or request review'));
+  }
+
+  if (status === 'completed' && req.user.role !== 'admin') {
+    return next(new ApiError(403, 'Only admins can mark projects as done'));
   }
 
   project.status = status;
@@ -102,13 +122,13 @@ exports.updateProjectStatus = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: project });
 });
 
-// @desc    Add a feature/request to a project
+// @desc    Add an admin-defined feature/request to a project
 exports.addProjectFeature = asyncHandler(async (req, res, next) => {
   const project = await Project.findById(req.params.id);
   if (!project) return next(new ApiError(404, 'Project not found'));
 
-  if (!canAccessProject(req.user, project)) {
-    return next(new ApiError(403, 'Not authorized to access this project'));
+  if (req.user.role !== 'admin') {
+    return next(new ApiError(403, 'Only admins can add project features'));
   }
 
   const { title, description } = req.body;
@@ -161,13 +181,48 @@ exports.updateProjectFeature = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: feature });
 });
 
+// @desc    Delete an admin-defined feature and its linked deliverables
+exports.deleteProjectFeature = asyncHandler(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
+  if (!project) return next(new ApiError(404, 'Project not found'));
+
+  if (req.user.role !== 'admin') {
+    return next(new ApiError(403, 'Only admins can delete project features'));
+  }
+
+  const feature = project.features.id(req.params.featureId);
+  if (!feature) return next(new ApiError(404, 'Feature not found'));
+
+  const deliverables = await Deliverable.find({
+    projectId: project._id,
+    featureId: req.params.featureId
+  }).select('_id');
+  const deliverableIds = deliverables.map((deliverable) => deliverable._id);
+
+  if (deliverableIds.length > 0) {
+    await FeedbackThread.deleteMany({ deliverableId: { $in: deliverableIds } });
+    await Deliverable.deleteMany({ _id: { $in: deliverableIds } });
+  }
+
+  project.features.pull(req.params.featureId);
+  await project.save();
+
+  await notifyUsers(req, [project.clientId, ...(project.designerIds || [])], {
+    type: 'info',
+    message: `Feature "${feature.title}" was removed from "${project.title}"`,
+    link: `/studios/${project._id}`
+  });
+
+  res.status(200).json({ success: true, data: {} });
+});
+
 // @desc    Permanently delete a completed project
 exports.deleteProject = asyncHandler(async (req, res, next) => {
   const project = await Project.findById(req.params.id);
   if (!project) return next(new ApiError(404, 'Project not found'));
 
-  if (!['delivered', 'approved'].includes(project.status)) {
-    return next(new ApiError(400, 'Project must be delivered or approved before it can be deleted'));
+  if (!['delivered', 'approved', 'completed'].includes(project.status)) {
+    return next(new ApiError(400, 'Project must be delivered, approved, or completed before it can be deleted'));
   }
 
   const deliverables = await Deliverable.find({ projectId: project._id }).select('_id');

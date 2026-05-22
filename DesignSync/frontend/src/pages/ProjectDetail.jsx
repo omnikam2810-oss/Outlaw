@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CheckCircle2, ListPlus, MessageSquareWarning, Plus, Trash2, Upload } from 'lucide-react';
+import { CheckCircle2, ListPlus, MessageSquareWarning, Plus, Trash2, Upload, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import DeliverableList from '../components/studios/DeliverableList';
@@ -24,6 +24,7 @@ const STATUS_COLORS = {
   in_review: 'warning',
   approved: 'success',
   delivered: 'success',
+  completed: 'success',
 };
 
 const FEATURE_STATUS_COLORS = {
@@ -110,8 +111,30 @@ const ProjectDetail = () => {
     try {
       await api.put(`/projects/${id}/status`, { status: newStatus });
       setProject(prev => ({ ...prev, status: newStatus }));
+      if (newStatus === 'completed') {
+        addToast('Project marked as done', 'success');
+        navigate('/studios');
+      }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const deleteFeature = async (feature, e) => {
+    e.stopPropagation();
+    if (!window.confirm(`Delete feature "${feature.title}" and its linked deliverables?`)) return;
+
+    try {
+      await api.delete(`/projects/${id}/features/${feature._id}`);
+      setProject((prev) => ({
+        ...prev,
+        features: prev.features?.filter((item) => item._id !== feature._id) || []
+      }));
+      setDeliverables((prev) => prev.filter((item) => item.featureId !== feature._id));
+      if (activeFeatureId === feature._id) setActiveFeatureId('');
+      addToast('Feature deleted', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.message || err.response?.data?.error || 'Failed to delete feature', 'error');
     }
   };
 
@@ -127,7 +150,7 @@ const ProjectDetail = () => {
   };
 
   const canUpload = user?.role === 'admin' || user?.role === 'designer';
-  const canAddFeature = user?.role === 'admin' || user?.role === 'designer' || user?.role === 'enterprise_client';
+  const canAddFeature = user?.role === 'admin';
   const isClient = user?.role === 'enterprise_client';
   const status = project?.status || 'draft';
   const features = project?.features || [];
@@ -136,7 +159,7 @@ const ProjectDetail = () => {
     ? deliverables.filter((deliverable) => deliverable.featureId === activeFeatureId)
     : deliverables;
   const activeDeliverable = visibleDeliverables.find((deliverable) => deliverable._id === activeDeliverableId) || visibleDeliverables[0] || null;
-  const canDeleteCompletedProject = user?.role === 'admin' && ['delivered', 'approved'].includes(status);
+  const canDeleteCompletedProject = user?.role === 'admin' && ['delivered', 'approved', 'completed'].includes(status);
   const deadline = project?.deadline
     ? new Date(project.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : '—';
@@ -196,8 +219,11 @@ const ProjectDetail = () => {
                Changes requested
              </div>
           )}
-          {(user?.role === 'admin' || user?.role === 'designer') && status !== 'delivered' && status !== 'approved' && (
+          {(user?.role === 'admin' || user?.role === 'designer') && !['delivered', 'approved', 'completed'].includes(status) && (
              <Button size="sm" onClick={() => updateStatus('delivered')}>Mark as Delivered</Button>
+          )}
+          {user?.role === 'admin' && !['approved', 'completed'].includes(status) && (
+             <Button size="sm" variant="secondary" onClick={() => updateStatus('completed')}>Mark as Done</Button>
           )}
           {canDeleteCompletedProject && (
             <Button size="sm" variant="danger" onClick={deleteProject}>
@@ -281,7 +307,9 @@ const ProjectDetail = () => {
                 All deliverables
               </button>
               {features.length === 0 ? (
-                <p className="py-3 text-center text-xs text-slate-400">No features added yet.</p>
+                <p className="py-3 text-center text-xs text-slate-400">
+                  {canAddFeature ? 'No features added yet.' : 'No admin features added yet.'}
+                </p>
               ) : features.map((feature) => (
                 <button
                   key={feature._id}
@@ -295,9 +323,26 @@ const ProjectDetail = () => {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="min-w-0 truncate text-xs font-semibold text-slate-900 dark:text-slate-100">{feature.title}</span>
-                    <Badge variant={FEATURE_STATUS_COLORS[feature.status] || 'secondary'} className="shrink-0 text-[10px]">
-                      {feature.status?.replace('_', ' ') || 'open'}
-                    </Badge>
+                    <span className="flex shrink-0 items-center gap-1">
+                      <Badge variant={FEATURE_STATUS_COLORS[feature.status] || 'secondary'} className="text-[10px]">
+                        {feature.status?.replace('_', ' ') || 'open'}
+                      </Badge>
+                      {canAddFeature && (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => deleteFeature(feature, e)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') deleteFeature(feature, e);
+                          }}
+                          className="inline-flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
+                          aria-label={`Delete feature ${feature.title}`}
+                          title="Delete feature"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </span>
+                      )}
+                    </span>
                   </div>
                   {feature.description && (
                     <p className="mt-1 max-h-8 overflow-hidden text-[11px] leading-4 text-slate-500 dark:text-slate-400">{feature.description}</p>
@@ -313,7 +358,7 @@ const ProjectDetail = () => {
             </h2>
             {canUpload && (
               <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setUploadOpen(true)}>
-                <Upload className="w-3.5 h-3.5 mr-1" /> Add
+                <Upload className="w-3.5 h-3.5 mr-1" /> Respond
               </Button>
             )}
           </div>
