@@ -186,24 +186,25 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 lg:-mx-8 lg:-mt-8">
+    <div className="space-y-5">
       {/* Top Bar */}
-      <div className="bg-white dark:bg-[#202225] border-b border-slate-200/80 dark:border-white/[0.08] px-6 py-3 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.02)] sticky top-0 z-10 shrink-0">
-        <div>
-          <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
+      <div className="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-white/[0.08] dark:bg-[#202225]">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <h1 className="truncate text-2xl font-bold text-slate-900 dark:text-white">
             {loading ? <div className="h-6 w-48 skeleton" /> : project?.title || `Project ${id}`}
           </h1>
-          <div className="flex items-center gap-2 mt-0.5">
-             <p className="text-xs font-medium text-slate-500">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+             <p className="text-sm font-semibold text-slate-500">
                {project?.clientId?.name || 'Unassigned'}
              </p>
              <span className="text-slate-300">•</span>
-             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+             <p className="text-xs font-semibold uppercase text-slate-400">
                Due {deadline}
              </p>
           </div>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap items-center gap-2">
           {isClient && status === 'delivered' && (
              <>
                <Button size="sm" variant="secondary" onClick={() => updateStatus('in_review')}>
@@ -234,12 +235,13 @@ const ProjectDetail = () => {
             {status.replace('_', ' ')}
           </Badge>
         </div>
+        </div>
       </div>
 
       {/* Main Split View */}
-      <div className="flex-1 flex overflow-hidden bg-[#FAFAFA] dark:bg-[#1F2937]">
+      <div className="grid min-h-[calc(100vh-15rem)] gap-5 xl:grid-cols-[440px_minmax(0,1fr)]">
         {/* Left Panel - Deliverables */}
-        <div className="w-[380px] border-r border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#202225] overflow-y-auto p-5 flex flex-col gap-4">
+        <aside className="flex min-h-0 flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-white/[0.08] dark:bg-[#202225] xl:max-h-[calc(100vh-15rem)] xl:overflow-y-auto">
           {isClient && (
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm dark:border-white/[0.08] dark:bg-[#2D3748]">
               <p className="font-semibold text-slate-900 dark:text-white">Client review</p>
@@ -248,7 +250,7 @@ const ProjectDetail = () => {
               </p>
             </div>
           )}
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-white/[0.08] dark:bg-[#2D3748]">
+          <section className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-white/[0.08] dark:bg-[#2D3748]">
             <div className="flex items-center justify-between gap-3">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
                 <ListPlus className="h-4 w-4 text-teal-700 dark:text-blue-400" />
@@ -350,10 +352,11 @@ const ProjectDetail = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </section>
 
-          <div className="flex justify-between items-center">
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <section className="flex min-h-[320px] flex-col gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="min-w-0 truncate text-base font-semibold text-slate-900 dark:text-slate-100">
                {activeFeature ? activeFeature.title : 'Deliverables'}
             </h2>
             {canUpload && (
@@ -363,7 +366,7 @@ const ProjectDetail = () => {
             )}
           </div>
 
-          <div className="flex-1">
+          <div className="min-h-0 flex-1">
             {loading ? (
               <div className="space-y-3">
                 <div className="h-16 skeleton rounded-lg" />
@@ -378,14 +381,15 @@ const ProjectDetail = () => {
               />
             )}
           </div>
-        </div>
+          </section>
+        </aside>
 
         {/* Right Panel - Viewer & Feedback */}
-        <div className="flex-1 min-w-0 flex flex-col relative overflow-hidden">
+        <section className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#202225]">
           {/* File viewer */}
-          <div className="flex-1 min-h-0 p-6 sm:p-10 overflow-hidden flex items-center justify-center relative">
+          <div className="relative flex min-h-[420px] flex-1 items-center justify-center overflow-hidden bg-slate-50 p-5 dark:bg-[#1F2937] sm:p-8">
             {activeDeliverable ? (
-              <div className="relative flex h-full w-full items-center justify-center bg-white dark:bg-[#2D3748] shadow-sm border border-slate-200 dark:border-white/[0.08] rounded-lg overflow-hidden">
+              <div className="relative flex h-full min-h-[360px] w-full items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#2D3748]">
                 {activeDeliverable.type?.includes('image') ? (
                   <>
                     <img
@@ -447,13 +451,15 @@ const ProjectDetail = () => {
           </div>
 
           {/* Live Feedback Panel */}
-          <FeedbackPanel
-            deliverable={activeDeliverable}
-            threads={threads}
-            setThreads={setThreads}
-            onAddFeedback={() => { setPendingPin(null); setFeedbackOpen(true); }}
-          />
-        </div>
+          <div className="border-t border-slate-200 dark:border-white/[0.08]">
+            <FeedbackPanel
+              deliverable={activeDeliverable}
+              threads={threads}
+              setThreads={setThreads}
+              onAddFeedback={() => { setPendingPin(null); setFeedbackOpen(true); }}
+            />
+          </div>
+        </section>
       </div>
 
       <UploadModal
