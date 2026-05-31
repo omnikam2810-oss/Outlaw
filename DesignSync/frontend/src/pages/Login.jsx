@@ -59,7 +59,7 @@ const Login = () => {
               <p className="text-sm font-semibold uppercase text-teal-300">Secure workspace</p>
               <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-4xl">A clean control center for design delivery.</h1>
               <p className="mt-4 text-sm leading-6 text-slate-300">
-                Empower teams to efficiently manage projects, academy reviews, client feedback, and multi-stage approval workflows through a collaborative platform focused on transparency, accountability, and streamlined delivery.
+                Empower teams to efficiently manage projects, academy reviews, client feedback, and multi-stage approval workflows through a collaborative platform focused on transparency, accountability, and streamlined delivery .
               </p>
             </div>
           </div>
